@@ -1,0 +1,67 @@
+{
+  "name": "atmosfx",
+  "version": "0.1.0",
+  "description": "Tiny, zero-dependency canvas effects (snow, rain, cherry blossom, autumn leaves...) for a whole page or a single element. Built to run on a potato.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.js"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "unpkg": "./dist/atmosfx.global.js",
+  "jsdelivr": "./dist/atmosfx.global.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "size": "node scripts/size.mjs",
+    "bench": "node scripts/bench.mjs"
+  },
+  "keywords": [
+    "snow",
+    "rain",
+    "cherry-blossom",
+    "autumn",
+    "particles",
+    "canvas",
+    "seasonal",
+    "effects",
+    "weather",
+    "confetti",
+    "animation"
+  ],
+  "devDependencies": {
+    "jsdom": "^31.0.1",
+    "playwright-core": "^1.65.1",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>atmosfx bench</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; min-height: 100vh; background: linear-gradient(#0b1320, #1b2a44); color: #dfe7f5; font: 14px/1.4 system-ui, sans-serif; }
+  .hud { position: fixed; top: 12px; left: 12px; z-index: 10000; background: #0009; backdrop-filter: blur(6px); padding: 12px 14px; border-radius: 10px; display: grid; gap: 8px; min-width: 230px; }
+  .hud label { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .readout { font: 13px/1.5 ui-monospace, monospace; white-space: pre; }
+  .card { position: absolute; right: 40px; bottom: 40px; width: 320px; height: 220px; border-radius: 14px; background: #ffffff10; border: 1px solid #ffffff22; display: grid; place-items: center; }
+</style>
+</head>
+<body>
+<div class="hud">
+  <label>effect <select id="effect"></select></label>
+  <label>quality <select id="quality"><option>auto</option><option>high</option><option>medium</option><option>low</option></select></label>
+  <label>intensity <input id="intensity" type="range" min="0" max="1" step="0.05" value="1" /></label>
+  <label>wind <input id="wind" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+  <label>scoped card <input id="card" type="checkbox" /></label>
+  <div class="readout" id="out"></div>
+</div>
+<div class="card" id="cardEl">rain only in here</div>
+<script src="../dist/atmosfx.global.js"></script>
+<script>
+  const { Effects, listEffects, schedulerState } = atmosfx;
+  const q = new URLSearchParams(location.search);
+  const $ = (id) => document.getElementById(id);
+  for (const n of listEffects()) $('effect').add(new Option(n));
+  $('effect').value = q.get('effect') || 'snow';
+  $('quality').value = q.get('quality') || 'auto';
+  $('intensity').value = q.get('intensity') ?? 1;
+
+  const opts = () => ({ quality: $('quality').value, intensity: +$('intensity').value, wind: +$('wind').value });
+  const fx = Effects.mount('page', $('effect').value, opts());
+  let card = null;
+  $('effect').onchange = () => fx.switch($('effect').value);
+  for (const id of ['quality', 'intensity', 'wind']) $(id).oninput = () => fx.update(opts());
+  $('card').onchange = () => {
+    if ($('card').checked) card = Effects.mount($('cardEl'), 'rain', { intensity: 1 });
+    else card = (card && card.destroy(), null);
+  };
+  if (q.has('card')) { $('card').checked = true; $('card').onchange(); }
+
+  // Page-level rAF fps (main-thread smoothness), independent of the library's own counter.
+  let frames = 0, rafFps = 0, t0 = performance.now();
+  (function count(now) {
+    frames++;
+    if (now - t0 >= 500) { rafFps = Math.round((frames * 1000) / (now - t0)); frames = 0; t0 = now; }
+    requestAnimationFrame(count);
+  })(t0);
+
+  window.__bench = () => ({ rafFps, ...fx.stats(), loop: schedulerState() });
+  setInterval(() => {
+    const s = window.__bench();
+    $('out').textContent =
+      `page fps   ${s.rafFps}\neffect fps ${s.fps}\nparticles  ${s.particles}\ntier       ${s.quality} (level ${s.level})\ndpr        ${s.dpr}\ninstances  ${s.loop.size}`;
+  }, 500);
+</script>
+</body>
+</html>
