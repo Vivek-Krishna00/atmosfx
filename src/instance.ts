@@ -123,7 +123,11 @@ export class Instance implements Tickable, EffectHandle {
     const o = this.opts;
     this.applyOptions(
       o.quality !== prev.quality,
-      o.colors !== prev.colors || o.size !== prev.size || o.opacity !== prev.opacity || o.ground !== prev.ground,
+      o.colors !== prev.colors ||
+        o.size !== prev.size ||
+        o.opacity !== prev.opacity ||
+        o.ground !== prev.ground ||
+        o.settleOn !== prev.settleOn,
     );
   }
 
@@ -145,10 +149,16 @@ export class Instance implements Tickable, EffectHandle {
     this.fadeIn();
   }
 
+  private setGround(next: GroundLayer | null): void {
+    this.ground?.destroy?.();
+    this.ground = next;
+    next?.attach?.(this.canvas);
+  }
+
   /** Soft entrance; compositor-only (CSS opacity), skipped for reduced motion. */
   private fadeIn(): void {
-    const s = this.canvas.style;
     if (this.reduced) return;
+    const s = this.canvas.style;
     s.transition = 'none';
     s.opacity = '0';
     void this.canvas.offsetWidth; // commit opacity 0 so the transition runs
@@ -164,6 +174,7 @@ export class Instance implements Tickable, EffectHandle {
     this.setPointer(false);
     for (const off of this.cleanups) off();
     this.cleanups.length = 0;
+    this.setGround(null);
     this.canvas.remove();
     if (this.restorePosition && this.host) this.host.style.position = '';
     this.sprites = [];
@@ -319,12 +330,13 @@ export class Instance implements Tickable, EffectHandle {
     let resized = false;
     if (rebake) {
       const want = !!def.ground && opts.ground;
-      if (!want) this.ground = null;
+      if (!want) this.setGround(null);
       else if (!this.ground || this.groundSpec !== def.ground) {
-        this.ground = def.ground!();
+        this.setGround(def.ground!());
         resized = true;
       }
       this.groundSpec = def.ground;
+      this.ground?.settle?.(opts.settleOn, this.host);
     }
     if (w !== this.w || h !== this.h || dpr !== this.dpr) {
       resized = true;

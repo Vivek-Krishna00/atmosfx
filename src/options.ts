@@ -14,9 +14,10 @@ export const TIERS: Record<Tier, TierSpec> = {
   high: { maxParticles: 250, maxDpr: 1.5, fps: 60 },
 };
 
-export type Resolved = Required<Omit<Options, 'colors' | 'zIndex'>> & {
+export type Resolved = Required<Omit<Options, 'colors' | 'zIndex' | 'settleOn'>> & {
   colors?: string[];
   zIndex?: number;
+  settleOn?: Options['settleOn'];
 };
 
 const num = (v: unknown, d: number, lo: number, hi: number): number =>
@@ -46,6 +47,7 @@ export function resolveOptions(o: Options = {}, prev?: Resolved): Resolved {
     ground: o.ground ?? p.ground,
     colors: o.colors?.length ? o.colors.slice(0, 5) : p.colors,
     zIndex: o.zIndex ?? p.zIndex,
+    settleOn: 'settleOn' in o ? o.settleOn : p.settleOn,
   };
 }
 
@@ -79,23 +81,36 @@ const isRange = (r: unknown, allowNeg = false, ordered = true): r is Range =>
   r.every((v) => typeof v === 'number' && isFinite(v) && (allowNeg || v >= 0)) &&
   (!ordered || r[0] <= r[1]);
 
+type Check = (v: any) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
+const isFn: Check = (v) => typeof v === 'function';
+const nonNeg: Check = (v) => typeof v === 'number' && v >= 0 && isFinite(v);
+
+/** Every known field and its check; `true` = required. Table-driven to keep the core small. */
+const RULES: Record<string, [Check, boolean?]> = {
+  draw: [isFn, true],
+  colors: [(c) => Array.isArray(c) && c.length > 0 && c.length <= 5 && c.every((x) => typeof x === 'string'), true],
+  size: [(r) => isRange(r) && r[0] > 0, true],
+  speed: [(r) => isRange(r, true), true],
+  density: [(v) => nonNeg(v) && v > 0, true],
+  drift: [(r) => isRange(r, true)],
+  opacity: [(r) => isRange(r, false, false) && Math.max(r[0], r[1]) <= 1],
+  sway: [nonNeg],
+  spin: [nonNeg],
+  gust: [nonNeg],
+  twinkle: [nonNeg],
+  windForce: [(v) => typeof v === 'number' && isFinite(v)],
+  ground: [isFn],
+  overlay: [isFn],
+  backdrop: [(v) => typeof v === 'string'],
+};
+
+/** Throws a TypeError naming the first invalid field. See EffectDefinition for each field's shape. */
 export function validateEffect(name: string, d: EffectDefinition): EffectDefinition {
-  const fail = (msg: string): never => {
-    throw new TypeError(`atmosfx: effect "${name}" ${msg}`);
-  };
-  if (!d || typeof d !== 'object') fail('must be an object');
-  if (typeof d.draw !== 'function') fail('needs a draw(ctx, r, color) function');
-  if (!Array.isArray(d.colors) || !d.colors.length || d.colors.length > 5 || d.colors.some((c) => typeof c !== 'string'))
-    fail('needs 1-5 colors');
-  if (!isRange(d.size) || d.size[0] <= 0) fail('size must be [min, max] with min > 0');
-  if (!isRange(d.speed, true)) fail('speed must be [min, max]');
-  if (d.drift !== undefined && !isRange(d.drift, true)) fail('drift must be [min, max]');
-  if (d.opacity !== undefined && (!isRange(d.opacity, false, false) || Math.max(...d.opacity) > 1))
-    fail('opacity must be [far, near] within 0..1');
-  if (!(typeof d.density === 'number' && d.density > 0 && isFinite(d.density))) fail('density must be a positive number');
-  if (d.gust !== undefined && !(typeof d.gust === 'number' && d.gust >= 0)) fail('gust must be >= 0');
-  if (d.ground !== undefined && typeof d.ground !== 'function') fail('ground must be a factory, e.g. bank({...})');
-  if (d.backdrop !== undefined && typeof d.backdrop !== 'string') fail('backdrop must be a CSS background string');
-  if (d.overlay !== undefined && typeof d.overlay !== 'function') fail('overlay must be a function');
+  if (!d || typeof d !== 'object') throw new TypeError(`atmosfx: effect "${name}" must be an object`);
+  for (const k in RULES) {
+    const [ok, required] = RULES[k];
+    const v = (d as unknown as Record<string, unknown>)[k];
+    if ((required || v !== undefined) && !ok(v)) throw new TypeError(`atmosfx: effect "${name}" has invalid "${k}"`);
+  }
   return d;
 }

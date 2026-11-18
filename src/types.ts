@@ -15,6 +15,10 @@ export interface GroundSpec {
   grow: number;
   /** Occasional glints on the surface. Default true. */
   sparkle?: boolean;
+  /** Icicles (with occasional drips) along the top edge. Default false. */
+  icicles?: boolean;
+  /** Frost creeping in from the corners. Default false. */
+  frost?: boolean;
 }
 
 /** Per-instance ground state. Implemented by `bank()`; custom grounds can implement it too. */
@@ -25,8 +29,14 @@ export interface GroundLayer {
   /** Jump to full height (reduced motion). */
   fill(): void;
   update(dt: number): void;
-  /** Draw in device px with an identity transform. */
+  /** Draw the moving parts, in device px with an identity transform. Runs every frame. */
   draw(ctx: CanvasRenderingContext2D, t: number): void;
+  /** Called once with the effect's canvas (e.g. to add a static layer behind it). */
+  attach?(canvas: HTMLCanvasElement): void;
+  /** Elements (or selector) to put caps on; `exclude` is the effect's own host element. */
+  settle?(target: Options['settleOn'], exclude: Element | null): void;
+  /** Remove anything attach/settle added. */
+  destroy?(): void;
 }
 
 export interface EffectDefinition {
@@ -94,6 +104,8 @@ export interface Options {
   interactive?: boolean;
   /** Show the effect's ground layer (e.g. winter's snow bank) if it has one. Default true. */
   ground?: boolean;
+  /** Elements (or a CSS selector) that collect snow caps on their top edge, for effects with a ground. */
+  settleOn?: string | Element | ArrayLike<Element>;
 }
 
 export interface Stats {

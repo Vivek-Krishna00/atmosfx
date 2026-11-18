@@ -36,7 +36,7 @@
   $('intensity').value = q.get('intensity') ?? 1;
 
   const opts = () => ({ quality: $('quality').value, intensity: +$('intensity').value, speed: +$('speed').value, size: +$('size').value, wind: +$('wind').value });
-  const fx = Effects.mount('page', $('effect').value, opts());
+  const fx = Effects.mount('page', $('effect').value, { ...opts(), settleOn: '.card' });
   let card = null;
   $('effect').onchange = () => fx.switch($('effect').value);
   for (const id of ['quality', 'intensity', 'speed', 'size', 'wind']) $(id).oninput = () => fx.update(opts());

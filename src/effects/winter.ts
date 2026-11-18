@@ -35,6 +35,6 @@ export const winter: EffectDefinition = {
   density: 3.4,
   windForce: 80,
   gust: 0.35,
-  ground: bank({ colors: ['#f7faff', '#d3e0f2'], height: 46, grow: 25 }),
+  ground: bank({ colors: ['#f7faff', '#d3e0f2'], height: 46, grow: 25, icicles: true, frost: true }),
   backdrop: 'radial-gradient(ellipse at center, rgba(205,225,255,0) 50%, rgba(205,225,255,0.2) 100%)',
 };

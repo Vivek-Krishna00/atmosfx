@@ -221,3 +221,22 @@ describe('winter ground', () => {
     fx.destroy();
   });
 });
+
+describe('winter scene', () => {
+  it('adds a static layer + cap scroll listener and removes everything on destroy', () => {
+    const card = box(300, 200);
+    card.className = 'card';
+    const add = vi.spyOn(window, 'addEventListener');
+    const rem = vi.spyOn(window, 'removeEventListener');
+    const fx = Effects.mount('page', 'winter', { settleOn: '.card' });
+    expect(document.querySelectorAll('canvas').length).toBe(2); // particles + static scene layer
+    for (let i = 0; i < 120; i++) (fx as unknown as { tick(d: number): void }).tick(1 / 60);
+    fx.update({ settleOn: undefined });
+    expect(document.querySelectorAll('canvas').length).toBe(2); // static layer survives losing cap targets
+    fx.update({ settleOn: card });
+    fx.destroy();
+    expect(document.querySelectorAll('canvas').length).toBe(0);
+    expect(add.mock.calls.length).toBe(rem.mock.calls.length);
+    vi.restoreAllMocks();
+  });
+});
