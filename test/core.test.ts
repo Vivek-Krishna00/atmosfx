@@ -23,7 +23,8 @@ describe('particle recycler', () => {
     const p = new Particles(100);
     p.w = 300;
     p.h = 200;
-    p.configure(snow, 3, 1, 1, 0.8);
+    p.configure(snow, 3, 1, 1);
+    p.windPx = 70;
     p.setCount(100, true);
     for (let f = 0; f < 2000; f++) p.step(0.05, NaN, NaN);
     expect(p.n).toBe(100);

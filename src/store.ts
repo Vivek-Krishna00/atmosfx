@@ -1,18 +1,25 @@
 import type { EffectDefinition, Range } from './types';
 
-export const SIZE_BUCKETS = 3;
-export const ALPHA_BUCKETS = 3;
+/** Depth layers, far (0) to near (LAYERS-1). Each layer gets its own baked sprites. */
+export const LAYERS = 4;
+/** Particle i lives in layer LAYER_OF[i % GROUPS]: 40% far, 30%, 20%, 10% near. Deterministic, so drawing far→near needs no sort. */
+export const GROUPS = 10;
+export const LAYER_OF = [0, 0, 0, 0, 1, 1, 1, 2, 2, 3] as const;
+/** Residue groups per layer, for the draw loop. */
+export const GROUPS_OF_LAYER: readonly (readonly number[])[] = [[0, 1, 2, 3], [4, 5, 6], [7, 8], [9]];
+export const depthOf = (layer: number) => layer / (LAYERS - 1);
+/** Parallax: how strongly sway and wind move a layer on screen. */
+export const PARALLAX = [0.35, 0.57, 0.78, 1] as const;
+
 const TAU = 6.283185307179586;
 const REPEL_RADIUS = 90;
 const REPEL_FORCE = 260;
 
-const lerp = (r: Range, t: number) => r[0] + (r[1] - r[0]) * t;
+export const lerp = (r: Range, t: number) => r[0] + (r[1] - r[0]) * t;
 
 /**
  * Structure-of-arrays particle store. Allocated once at the tier's hard max;
  * `n` is the live count. Nothing in `step` allocates.
- * Particle i always uses alpha bucket i % ALPHA_BUCKETS, so drawing can batch by
- * alpha without sorting.
  */
 export class Particles {
   readonly x: Float32Array;
@@ -22,7 +29,7 @@ export class Particles {
   readonly rot: Float32Array;
   readonly spin: Float32Array;
   readonly phase: Float32Array;
-  /** Sprite index = sizeBucket * nColors + colorBucket. */
+  /** Sprite index = layer * nColors + colorIndex. */
   readonly spr: Uint8Array;
   n = 0;
   w = 0;
@@ -36,6 +43,7 @@ export class Particles {
   /** Off-screen margin in CSS px (≈ largest sprite radius). */
   pad = 20;
   speedMul = 1;
+  /** Wind in px/s for the nearest layer (includes gusts; set every frame by the instance). */
   windPx = 0;
 
   constructor(readonly max: number) {
@@ -49,23 +57,23 @@ export class Particles {
     this.spr = new Uint8Array(max);
   }
 
-  configure(def: EffectDefinition, nColors: number, sizeMul: number, speedMul: number, wind: number): void {
+  configure(def: EffectDefinition, nColors: number, sizeMul: number, speedMul: number): void {
     this.speed = def.speed;
     this.drift = def.drift;
     this.sway = def.sway ?? 0;
     this.spinMax = def.spin ?? 0;
     this.nColors = nColors;
-    this.pad = def.size[1] * sizeMul + 4;
+    this.pad = Math.max(def.size[0], def.size[1]) * sizeMul + 4;
     this.speedMul = speedMul;
-    this.windPx = wind * (def.windForce ?? 120);
   }
 
   /** Reset particle i. `anywhere` scatters it over the area (initial fill); otherwise it enters from the edge it falls/rises from. */
   spawn(i: number, anywhere: boolean): void {
-    const sb = (Math.random() * SIZE_BUCKETS) | 0;
-    this.spr[i] = sb * this.nColors + ((Math.random() * this.nColors) | 0);
-    // Bigger buckets move faster: cheap parallax.
-    const vy = lerp(this.speed, (sb + Math.random()) / SIZE_BUCKETS);
+    const layer = LAYER_OF[i % GROUPS];
+    this.spr[i] = layer * this.nColors + ((Math.random() * this.nColors) | 0);
+    // Speed follows depth (parallax) with a little jitter so a layer doesn't move in lockstep.
+    const d = Math.min(1, Math.max(0, depthOf(layer) + (Math.random() - 0.5) * 0.3));
+    const vy = lerp(this.speed, d);
     const vx = this.drift ? lerp(this.drift, Math.random()) : 0;
     this.vy[i] = vy;
     this.vx[i] = vx;
@@ -78,7 +86,8 @@ export class Particles {
       this.y[i] = Math.random() * h;
     } else {
       // Pick x so the particle's slanted path actually crosses the area.
-      const across = ((vx + this.windPx) * (h + 2 * pad)) / (Math.abs(vy) * this.speedMul || 1);
+      const hx = vx + this.windPx * PARALLAX[layer];
+      const across = (hx * (h + 2 * pad)) / (Math.abs(vy) * this.speedMul || 1);
       this.x[i] = Math.random() * (w + Math.abs(across)) - Math.max(across, 0);
       this.y[i] = vy > 0 ? -pad : h + pad;
     }
@@ -98,9 +107,11 @@ export class Particles {
     const repel = mx === mx;
     const R2 = REPEL_RADIUS * REPEL_RADIUS;
     for (let i = 0; i < n; i++) {
-      const ph = (phase[i] += dt * (0.6 + (i & 3) * 0.25));
-      const hx = vx[i] + windPx;
-      let px = (x[i] += (hx + Math.sin(ph) * sway) * dt);
+      const k = PARALLAX[LAYER_OF[i % GROUPS]];
+      const ph = (phase[i] += dt * (0.5 + (i & 3) * 0.22));
+      const hx = vx[i] + windPx * k;
+      // Two detuned sines read as organic flutter rather than a metronome.
+      let px = (x[i] += (hx + (Math.sin(ph) + 0.35 * Math.sin(ph * 2.3 + 1)) * sway * k) * dt);
       let py = (y[i] += vy[i] * speedMul * dt);
       if (spinning) rot[i] += spin[i] * dt;
       if (repel) {

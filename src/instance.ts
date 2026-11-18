@@ -2,7 +2,7 @@ import { guessTier, resolveOptions, TIERS, type Resolved, type Tier, type TierSp
 import { resolveEffect } from './registry';
 import { schedule, unschedule, type Tickable } from './scheduler';
 import { bakeSprites, type Sprite } from './sprites';
-import { ALPHA_BUCKETS, Particles } from './store';
+import { depthOf, GROUPS, GROUPS_OF_LAYER, LAYERS, lerp, PARALLAX, Particles } from './store';
 import type { EffectDefinition, EffectHandle, Options, Stats } from './types';
 
 /** Adaptive quality steps: particle-count scale per level. Level >= 2 also forces DPR 1. */
@@ -22,7 +22,6 @@ export class Instance implements Tickable, EffectHandle {
   private spec: TierSpec = TIERS.high;
   private p: Particles = new Particles(0);
   private sprites: Sprite[] = [];
-  private readonly alpha = new Float32Array(ALPHA_BUCKETS);
 
   private w = 0;
   private h = 0;
@@ -55,7 +54,7 @@ export class Instance implements Tickable, EffectHandle {
 
     const c = (this.canvas = document.createElement('canvas'));
     c.setAttribute('aria-hidden', 'true');
-    c.style.cssText = `position:${this.host ? 'absolute' : 'fixed'};inset:0;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block;border:0;margin:0;padding:0`;
+    c.style.cssText = `position:${this.host ? 'absolute' : 'fixed'};inset:0;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block;border:0;margin:0;padding:0;border-radius:inherit`;
     this.ctx = c.getContext('2d', { alpha: true });
 
     if (this.host) {
@@ -106,6 +105,7 @@ export class Instance implements Tickable, EffectHandle {
     }
 
     this.applyOptions(true);
+    this.fadeIn();
   }
 
   // ---- public API -------------------------------------------------------
@@ -140,6 +140,18 @@ export class Instance implements Tickable, EffectHandle {
     this.def = resolveEffect(effect);
     this.t = 0;
     this.layout(true, true);
+    this.fadeIn();
+  }
+
+  /** Soft entrance; compositor-only (CSS opacity), skipped for reduced motion. */
+  private fadeIn(): void {
+    const s = this.canvas.style;
+    if (this.reduced) return;
+    s.transition = 'none';
+    s.opacity = '0';
+    void this.canvas.offsetWidth; // commit opacity 0 so the transition runs
+    s.transition = 'opacity .9s ease-out';
+    s.opacity = '';
   }
 
   destroy(): void {
@@ -177,7 +189,10 @@ export class Instance implements Tickable, EffectHandle {
     this.acc = 0;
     this.adapt(frame, fps);
     const step = frame > 0.05 ? 0.05 : frame; // clamp so tab switches don't jump
-    this.t += step;
+    const t = (this.t += step);
+    // Gusts: slow, detuned sines layered on the user's wind so motion never looks mechanical.
+    const gust = (this.def.gust ?? 0.2) * (Math.sin(t * 0.31) * 0.6 + Math.sin(t * 0.87 + 1.3) * 0.4);
+    this.p.windPx = (this.opts.wind + gust) * (this.def.windForce ?? 120);
     this.p.step(step, this.mx, this.my);
     this.draw(step);
   }
@@ -185,46 +200,51 @@ export class Instance implements Tickable, EffectHandle {
   private draw(dt: number): void {
     const ctx = this.ctx;
     if (!ctx) return;
-    const { canvas, p, dpr, sprites, def, alpha, t } = this;
+    const { canvas, p, dpr, sprites, def, t } = this;
     const W = canvas.width;
     const H = canvas.height;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, W, H);
 
     const { x, y, rot, spr, n } = p;
     const spinning = (def.spin ?? 0) > 0;
     const rotated = spinning || !!def.align;
+    const tw = def.twinkle ?? 0;
+    const driftMid = def.drift ? (def.drift[0] + def.drift[1]) / 2 : 0;
     let ac = 1;
     let as = 0;
-    if (def.align) {
-      const d = def.drift;
-      const hx = p.windPx + (d ? (d[0] + d[1]) / 2 : 0);
-      const vy = ((def.speed[0] + def.speed[1]) / 2) * p.speedMul || 1;
-      const a = -Math.atan2(hx, vy);
-      ac = Math.cos(a);
-      as = Math.sin(a);
-    }
-    const tw = def.twinkle ?? 0;
 
-    for (let b = 0; b < ALPHA_BUCKETS; b++) {
-      const a = tw ? alpha[b] * (0.55 + 0.45 * Math.sin(t * tw * TAU + b * 2.1)) : alpha[b];
-      if (a <= 0.004) continue;
-      ctx.globalAlpha = a;
-      for (let i = b; i < n; i += ALPHA_BUCKETS) {
-        const s = sprites[spr[i]];
-        const hf = s.half;
-        const X = x[i] * dpr;
-        const Y = y[i] * dpr;
-        if (X < -hf || Y < -hf || X > W + hf || Y > H + hf) continue;
-        if (rotated) {
-          if (spinning) {
-            ac = Math.cos(rot[i]);
-            as = Math.sin(rot[i]);
+    // Far layers first so near particles paint over them. Opacity is baked into sprites,
+    // so globalAlpha only changes for twinkling effects (once per group, not per particle).
+    for (let L = 0; L < LAYERS; L++) {
+      if (def.align) {
+        // Streaks point along their layer's actual motion (near layers slant more under wind).
+        const vy = lerp(def.speed, depthOf(L)) * p.speedMul || 1;
+        const a = -Math.atan2(driftMid + p.windPx * PARALLAX[L], vy);
+        ac = Math.cos(a);
+        as = Math.sin(a);
+      }
+      const groups = GROUPS_OF_LAYER[L];
+      for (let g = 0; g < groups.length; g++) {
+        const r = groups[g];
+        if (tw) ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * tw * TAU + r * 1.9);
+        for (let i = r; i < n; i += GROUPS) {
+          const s = sprites[spr[i]];
+          const hf = s.half;
+          const X = x[i] * dpr;
+          const Y = y[i] * dpr;
+          if (X < -hf || Y < -hf || X > W + hf || Y > H + hf) continue;
+          if (rotated) {
+            if (spinning) {
+              ac = Math.cos(rot[i]);
+              as = Math.sin(rot[i]);
+            }
+            ctx.setTransform(ac, as, -as, ac, X, Y);
+            ctx.drawImage(s.img, -hf, -hf);
+          } else {
+            ctx.drawImage(s.img, X - hf, Y - hf);
           }
-          ctx.setTransform(ac, as, -as, ac, X, Y);
-          ctx.drawImage(s.img, -hf, -hf);
-        } else {
-          ctx.drawImage(s.img, X - hf, Y - hf);
         }
       }
     }
@@ -299,11 +319,10 @@ export class Instance implements Tickable, EffectHandle {
 
     const colors = opts.colors ?? def.colors;
     if (rebake) {
-      this.sprites = bakeSprites(def, colors, opts.size, dpr);
-      const [lo, hi] = def.opacity ?? [1, 1];
-      for (let b = 0; b < ALPHA_BUCKETS; b++) this.alpha[b] = (lo + ((hi - lo) * b) / (ALPHA_BUCKETS - 1)) * opts.opacity;
+      this.sprites = bakeSprites(def, colors, opts.size, opts.opacity, dpr);
     }
-    p.configure(def, colors.length, opts.size, opts.speed, opts.wind);
+    p.configure(def, colors.length, opts.size, opts.speed);
+    p.windPx = opts.wind * (def.windForce ?? 120);
 
     // Sprite indices depend on the color count; if it changed, existing particles point at the wrong sprites.
     if (colors.length !== this.nColors) respawn = true;

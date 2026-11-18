@@ -71,11 +71,11 @@ export function guessTier(): Tier {
   return 'high';
 }
 
-const isRange = (r: unknown, allowNeg = false): r is Range =>
+const isRange = (r: unknown, allowNeg = false, ordered = true): r is Range =>
   Array.isArray(r) &&
   r.length === 2 &&
   r.every((v) => typeof v === 'number' && isFinite(v) && (allowNeg || v >= 0)) &&
-  r[0] <= r[1];
+  (!ordered || r[0] <= r[1]);
 
 export function validateEffect(name: string, d: EffectDefinition): EffectDefinition {
   const fail = (msg: string): never => {
@@ -88,8 +88,10 @@ export function validateEffect(name: string, d: EffectDefinition): EffectDefinit
   if (!isRange(d.size) || d.size[0] <= 0) fail('size must be [min, max] with min > 0');
   if (!isRange(d.speed, true)) fail('speed must be [min, max]');
   if (d.drift !== undefined && !isRange(d.drift, true)) fail('drift must be [min, max]');
-  if (d.opacity !== undefined && (!isRange(d.opacity) || d.opacity[1] > 1)) fail('opacity must be [min, max] within 0..1');
+  if (d.opacity !== undefined && (!isRange(d.opacity, false, false) || Math.max(...d.opacity) > 1))
+    fail('opacity must be [far, near] within 0..1');
   if (!(typeof d.density === 'number' && d.density > 0 && isFinite(d.density))) fail('density must be a positive number');
+  if (d.gust !== undefined && !(typeof d.gust === 'number' && d.gust >= 0)) fail('gust must be >= 0');
   if (d.overlay !== undefined && typeof d.overlay !== 'function') fail('overlay must be a function');
   return d;
 }

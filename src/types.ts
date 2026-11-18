@@ -6,13 +6,17 @@ export type Quality = 'auto' | 'low' | 'medium' | 'high';
  * `draw` runs once per (size, color) bucket onto an offscreen canvas, never per frame.
  */
 export interface EffectDefinition {
-  /** Draw the particle centered at (0,0) within a box of radius `r`. fillStyle/strokeStyle are preset to `color`. */
-  draw(ctx: CanvasRenderingContext2D, r: number, color: string): void;
+  /**
+   * Draw the particle centered at (0,0) within a box of radius `r`. fillStyle/strokeStyle are preset to `color`.
+   * `depth` runs 0 (far) to 1 (near): use it for depth-of-field (blur near particles) or detail.
+   * Runs once per (depth layer × color) when sprites are baked, never per frame.
+   */
+  draw(ctx: CanvasRenderingContext2D, r: number, color: string, depth: number): void;
   /** Up to 5 colors; each becomes a sprite bucket. */
   colors: readonly string[];
-  /** Sprite radius in CSS px. */
+  /** Sprite radius in CSS px, [far, near]. */
   size: Range;
-  /** Vertical speed in px/s. Positive falls, negative rises, 0 floats. */
+  /** Vertical speed in px/s, [far, near]. Positive falls, negative rises, 0 floats. */
   speed: Range;
   /** Base horizontal speed in px/s. */
   drift?: Range;
@@ -22,13 +26,15 @@ export interface EffectDefinition {
   spin?: number;
   /** Rotate every sprite to point along its fall direction (rain streaks). */
   align?: boolean;
-  /** Opacity range, quantized into 3 buckets. */
+  /** Opacity [far, near], baked into sprites. Either end may be larger (e.g. dim out-of-focus near particles). */
   opacity?: Range;
   /** Particles per 10,000 px² at intensity 1. */
   density: number;
   /** How strongly the `wind` option pushes this effect, in px/s at wind = 1. Default 120. */
   windForce?: number;
-  /** Twinkle: alpha buckets pulse at this rate (Hz). 0 = off. */
+  /** Random gusts layered on `wind`, as a fraction of windForce. Default 0.2; 0 = steady. */
+  gust?: number;
+  /** Twinkle: particle groups pulse at about this rate (Hz). 0 = off. */
   twinkle?: number;
   /** Optional full-canvas overlay drawn after particles (e.g. lightning). Must not allocate. */
   overlay?(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, dt: number): void;
