@@ -6,7 +6,7 @@ const checked = new WeakSet<EffectDefinition>();
 
 /** Register a custom (or built-in) effect under a name. Throws if the definition is invalid. */
 export function registerEffect(name: string, def: EffectDefinition): void {
-  if (typeof name !== 'string' || !name) throw new TypeError('atmosfx: effect name must be a non-empty string');
+  if (!name || typeof name !== 'string') throw new TypeError('atmosfx: bad effect name');
   registry.set(name, validateEffect(name, def));
   checked.add(def);
 }
@@ -14,7 +14,7 @@ export function registerEffect(name: string, def: EffectDefinition): void {
 export function resolveEffect(effect: string | EffectDefinition): EffectDefinition {
   if (typeof effect === 'string') {
     const def = registry.get(effect);
-    if (!def) throw new Error(`atmosfx: unknown effect "${effect}". Registered: ${[...registry.keys()].join(', ') || 'none'}`);
+    if (!def) throw new Error(`atmosfx: unknown effect "${effect}" (see listEffects())`);
     return def;
   }
   if (!checked.has(effect)) {

@@ -112,7 +112,10 @@ export interface Options {
   fps?: number;
   respectReducedMotion?: boolean;
   pauseWhenHidden?: boolean;
-  /** Particles gently avoid the cursor. Default false. */
+  /**
+   * Particles react to the cursor (or a finger): they part around it and get swept along when it
+   * moves, then settle back. Default false; the pointer listener is only attached while on.
+   */
   interactive?: boolean;
   /** Show the effect's ground layer (e.g. winter's snow bank) if it has one. Default true. */
   ground?: boolean;

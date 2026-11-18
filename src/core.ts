@@ -19,12 +19,14 @@ export type { EffectDefinition, EffectHandle, GroundLayer, GroundSpec, Options, 
 export type Target = 'page' | Element | string;
 
 const NOOP_STATS: Stats = { fps: 0, particles: 0, quality: 'low', level: 0, dpr: 1, running: false };
+const nothing = () => {};
+/** Handle returned on the server (no DOM) or when Effects.auto() maps the month to no effect. */
 const noop = (): EffectHandle => ({
-  update() {},
-  pause() {},
-  resume() {},
-  switch() {},
-  destroy() {},
+  update: nothing,
+  pause: nothing,
+  resume: nothing,
+  switch: nothing,
+  destroy: nothing,
   stats: () => NOOP_STATS,
 });
 

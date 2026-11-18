@@ -13,8 +13,14 @@ export const depthOf = (layer: number) => layer / (LAYERS - 1);
 export const PARALLAX = [0.35, 0.57, 0.78, 1] as const;
 
 const TAU = 6.283185307179586;
-const REPEL_RADIUS = 90;
-const REPEL_FORCE = 260;
+/** Cursor influence radius (CSS px). */
+const CURSOR_R = 150;
+/** Outward push around the cursor, px/s² at the center. */
+const PUSH = 900;
+/** How much of the cursor's velocity is passed on as wake, per second at the center. */
+const DRAG = 6;
+/** Cap on kick speed so a flick can't fling particles off at absurd speed. */
+const KICK_MAX = 700;
 
 export const lerp = (r: Range, t: number) => r[0] + (r[1] - r[0]) * t;
 
@@ -30,6 +36,9 @@ export class Particles {
   readonly rot: Float32Array;
   readonly spin: Float32Array;
   readonly phase: Float32Array;
+  /** Momentum from the cursor (px/s), decays back to 0 so particles resume their normal motion. */
+  readonly kx: Float32Array;
+  readonly ky: Float32Array;
   /** Sprite index = layer * nColors + colorIndex. */
   readonly spr: Uint8Array;
   n = 0;
@@ -57,6 +66,8 @@ export class Particles {
     this.rot = new Float32Array(max);
     this.spin = new Float32Array(max);
     this.phase = new Float32Array(max);
+    this.kx = new Float32Array(max);
+    this.ky = new Float32Array(max);
     this.spr = new Uint8Array(max);
   }
 
@@ -81,6 +92,7 @@ export class Particles {
     this.vy[i] = vy;
     this.vx[i] = vx;
     this.phase[i] = Math.random() * TAU;
+    this.kx[i] = this.ky[i] = 0;
     this.rot[i] = Math.random() * TAU;
     this.spin[i] = (Math.random() * 2 - 1) * this.spinMax;
     const { w, h, pad } = this;
@@ -103,31 +115,52 @@ export class Particles {
     this.n = target;
   }
 
-  /** Advance all particles. `mx` is NaN when there is no pointer to avoid. */
-  step(dt: number, mx: number, my: number): void {
-    const { x, y, vx, vy, rot, spin, phase, n, w, h, pad, sway, speedMul, windPx, floor } = this;
+  /**
+   * Advance all particles. `mx`/`my` is the cursor (NaN when there is none) and `pvx`/`pvy` its
+   * velocity in px/s. Near the cursor particles get pushed out and dragged along its motion; that
+   * momentum decays, so they swirl and then settle back into their normal motion.
+   */
+  step(dt: number, mx: number, my: number, pvx = 0, pvy = 0): void {
+    const { x, y, vx, vy, kx, ky, rot, spin, phase, n, w, h, pad, sway, speedMul, windPx, floor } = this;
     const cols = floor ? floor.length : 0;
     const spinning = this.spinMax > 0;
-    const repel = mx === mx;
-    const R2 = REPEL_RADIUS * REPEL_RADIUS;
+    const cursor = mx === mx;
+    const R2 = CURSOR_R * CURSOR_R;
+    const decay = Math.exp(-dt * 1.6);
+    const sweep = Math.sqrt(pvx * pvx + pvy * pvy);
     for (let i = 0; i < n; i++) {
       const layer = LAYER_OF[i % GROUPS];
       const k = PARALLAX[layer];
       const ph = (phase[i] += dt * (0.5 + (i & 3) * 0.22));
       const hx = vx[i] + windPx * k;
       // Two detuned sines read as organic flutter rather than a metronome.
-      let px = (x[i] += (hx + (Math.sin(ph) + 0.35 * Math.sin(ph * 2.3 + 1)) * sway * k) * dt);
-      let py = (y[i] += vy[i] * speedMul * dt);
+      const px = (x[i] += (hx + (Math.sin(ph) + 0.35 * Math.sin(ph * 2.3 + 1)) * sway * k + kx[i]) * dt);
+      const py = (y[i] += (vy[i] * speedMul + ky[i]) * dt);
+      kx[i] *= decay;
+      ky[i] *= decay;
       if (spinning) rot[i] += spin[i] * dt;
-      if (repel) {
+      if (cursor) {
         const dx = px - mx;
         const dy = py - my;
         const d2 = dx * dx + dy * dy;
         if (d2 < R2 && d2 > 0.01) {
           const d = Math.sqrt(d2);
-          const f = ((1 - d / REPEL_RADIUS) * REPEL_FORCE * dt) / d;
-          px = x[i] += dx * f;
-          py = y[i] += dy * f;
+          const t = 1 - d / CURSOR_R;
+          const f = t * t * k * dt; // smooth falloff; near layers react more (parallax)
+          let ax = kx[i] + (pvx * DRAG + (dx / d) * PUSH) * f;
+          let ay = ky[i] + (pvy * DRAG + (dy / d) * PUSH) * f;
+          const s2 = ax * ax + ay * ay;
+          if (s2 > KICK_MAX * KICK_MAX) {
+            const sc = KICK_MAX / Math.sqrt(s2);
+            ax *= sc;
+            ay *= sc;
+          }
+          kx[i] = ax;
+          ky[i] = ay;
+          // A sweep spins petals/leaves/confetti faster and speeds up their flip.
+          const twirl = sweep * t * k * dt * 0.012;
+          if (spinning) rot[i] += twirl * (spin[i] < 0 ? -1 : 1);
+          phase[i] += twirl;
         }
       }
       if (vy[i] === 0) {

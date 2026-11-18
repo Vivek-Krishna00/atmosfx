@@ -36,6 +36,7 @@ export class Instance implements Tickable, EffectHandle {
   private hidden = false;
   private onscreen = true;
   private reduced = false;
+  private mql: MediaQueryList | null = null;
   private running = false;
   private destroyed = false;
 
@@ -47,6 +48,10 @@ export class Instance implements Tickable, EffectHandle {
 
   private mx = NaN;
   private my = NaN;
+  /** Cursor velocity (px/s), smoothed; decays when the cursor stops (no events fire then). */
+  private pvx = 0;
+  private pvy = 0;
+  private lastMove = 0;
   private pointerOff: (() => void) | null = null;
 
   constructor(target: 'page' | HTMLElement, effect: string | EffectDefinition, options: Options = {}) {
@@ -56,7 +61,7 @@ export class Instance implements Tickable, EffectHandle {
 
     const c = (this.canvas = document.createElement('canvas'));
     c.setAttribute('aria-hidden', 'true');
-    c.style.cssText = `position:${this.host ? 'absolute' : 'fixed'};inset:0;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block;border:0;margin:0;padding:0;border-radius:inherit`;
+    c.style.cssText = `position:${this.host ? 'absolute' : 'fixed'};top:0;left:0;width:100%;height:100%;pointer-events:none;display:block;border:0;margin:0;border-radius:inherit`;
     this.ctx = c.getContext('2d', { alpha: true });
 
     if (this.host) {
@@ -90,11 +95,8 @@ export class Instance implements Tickable, EffectHandle {
     this.hidden = document.hidden;
 
     if (typeof matchMedia !== 'undefined') {
-      const mql = matchMedia('(prefers-reduced-motion: reduce)');
-      const onChange = () => {
-        this.reduced = this.opts.respectReducedMotion && mql.matches;
-        this.layout();
-      };
+      const mql = (this.mql = matchMedia('(prefers-reduced-motion: reduce)'));
+      const onChange = () => this.layout();
       // Safari < 14 only has addListener.
       if (mql.addEventListener) {
         mql.addEventListener('change', onChange);
@@ -103,7 +105,6 @@ export class Instance implements Tickable, EffectHandle {
         mql.addListener(onChange);
         this.cleanups.push(() => mql.removeListener(onChange));
       }
-      this.reduced = this.opts.respectReducedMotion && mql.matches;
     }
 
     this.applyOptions(true);
@@ -116,10 +117,6 @@ export class Instance implements Tickable, EffectHandle {
     if (this.destroyed) return;
     const prev = this.opts;
     this.opts = resolveOptions(options, prev);
-    this.reduced =
-      this.opts.respectReducedMotion &&
-      typeof matchMedia !== 'undefined' &&
-      matchMedia('(prefers-reduced-motion: reduce)').matches;
     const o = this.opts;
     this.applyOptions(
       o.quality !== prev.quality,
@@ -208,7 +205,10 @@ export class Instance implements Tickable, EffectHandle {
     const gust = (this.def.gust ?? 0.2) * (Math.sin(t * 0.31) * 0.6 + Math.sin(t * 0.87 + 1.3) * 0.4);
     this.p.windPx = (this.opts.wind + gust) * (this.def.windForce ?? 120);
     this.ground?.update(step);
-    this.p.step(step, this.mx, this.my);
+    const still = Math.exp(-step * 10);
+    this.pvx *= still;
+    this.pvy *= still;
+    this.p.step(step, this.mx, this.my, this.pvx, this.pvy);
     this.draw(step);
   }
 
@@ -327,6 +327,7 @@ export class Instance implements Tickable, EffectHandle {
 
   private layout(rebake = false, respawn = false): void {
     if (this.destroyed) return;
+    this.reduced = this.opts.respectReducedMotion && !!this.mql?.matches;
     const host = this.host;
     if (host && !host.isConnected) return this.destroy();
     const w = host ? host.clientWidth : window.innerWidth;
@@ -399,17 +400,28 @@ export class Instance implements Tickable, EffectHandle {
     } else {
       unschedule(this);
     }
-    if (this.host && !this.host.isConnected) this.destroy();
   }
 
   private setPointer(on: boolean): void {
     if (on && !this.pointerOff) {
       const move = (e: PointerEvent) => {
         const r = this.canvas.getBoundingClientRect();
-        this.mx = e.clientX - r.left;
-        this.my = e.clientY - r.top;
+        const nx = e.clientX - r.left;
+        const ny = e.clientY - r.top;
+        const gap = (e.timeStamp - this.lastMove) / 1000;
+        if (gap > 0 && gap < 0.1 && this.mx === this.mx) {
+          // smoothed velocity so one jittery event doesn't fling everything
+          this.pvx += ((nx - this.mx) / gap - this.pvx) * 0.5;
+          this.pvy += ((ny - this.my) / gap - this.pvy) * 0.5;
+        }
+        this.lastMove = e.timeStamp;
+        this.mx = nx;
+        this.my = ny;
       };
-      const leave = () => (this.mx = this.my = NaN);
+      const leave = () => {
+        this.mx = this.my = NaN;
+        this.pvx = this.pvy = 0;
+      };
       window.addEventListener('pointermove', move, { passive: true });
       document.documentElement.addEventListener('pointerleave', leave);
       this.pointerOff = () => {

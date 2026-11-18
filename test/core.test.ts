@@ -277,3 +277,35 @@ describe('every built-in effect', () => {
     expect(el.querySelectorAll('canvas').length).toBe(0);
   });
 });
+
+describe('cursor interaction', () => {
+  const one = () => {
+    const p = new Particles(10);
+    p.w = 800;
+    p.h = 600;
+    p.configure(snow, 3, 1, 0); // speedMul 0: isolate cursor motion
+    p.setCount(10, true);
+    for (let i = 0; i < 10; i++) {
+      p.x[i] = 400;
+      p.y[i] = 300;
+      p.vx[i] = 0;
+    }
+    return p;
+  };
+  it('sweeps particles along the cursor motion, then lets them settle', () => {
+    const p = one();
+    for (let f = 0; f < 10; f++) p.step(1 / 60, 380, 300, 1200, 0); // cursor moving right, just left of them
+    const moved = p.x[9] - 400; // index 9 = nearest layer, reacts most
+    expect(moved).toBeGreaterThan(20);
+    const kick = p.kx[9];
+    for (let f = 0; f < 240; f++) p.step(1 / 60, NaN, NaN);
+    expect(Math.abs(p.kx[9])).toBeLessThan(Math.abs(kick) * 0.05); // momentum decays away
+  });
+  it('pushes particles away from a resting cursor and ignores far ones', () => {
+    const p = one();
+    p.x[0] = 50; // far from the cursor
+    for (let f = 0; f < 10; f++) p.step(1 / 60, 420, 300, 0, 0); // resting just right of them
+    expect(p.x[9]).toBeLessThan(400);
+    expect(p.kx[0]).toBe(0);
+  });
+});
