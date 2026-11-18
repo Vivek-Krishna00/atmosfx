@@ -23,12 +23,26 @@ function oval(g: CanvasRenderingContext2D, r: number): void {
   g.fill();
 }
 
+function birch(g: CanvasRenderingContext2D, r: number): void {
+  // rounded leaf with a pointed tip and a gently serrated edge
+  g.beginPath();
+  for (let k = 0; k <= 24; k++) {
+    const a = (k / 24) * 6.2832 - Math.PI / 2;
+    const tip = Math.max(0, Math.cos(a + Math.PI / 2)) ** 6 * 0.35; // pointed top
+    const rr = r * (0.66 + tip + (k % 2) * 0.04);
+    g.lineTo(Math.cos(a) * rr * 0.85, Math.sin(a) * rr);
+  }
+  g.closePath();
+  g.fill();
+}
+
 /** Autumn leaves: a mix of maple and oval leaves in warm tones that tumble and flip as they fall. */
 export const autumn: EffectDefinition = {
   draw(g, r, _color, depth, index) {
-    const isMaple = index % 2 === 0;
-    inFocus(g, depth, r, () => (isMaple ? maple(g, r) : oval(g, r)));
-    sheen(g, r, 0.3, 0.25);
+    const kind = index % 3; // 0 maple, 1 oval, 2 birch
+    const isMaple = kind === 0;
+    inFocus(g, depth, r, () => (isMaple ? maple(g, r) : kind === 1 ? oval(g, r) : birch(g, r)));
+    sheen(g, r, 0.45, 0.25);
     if (depth >= 0.9 || r < 4) return;
     // veins + stem
     g.strokeStyle = 'rgba(70,30,10,0.35)';
@@ -51,15 +65,15 @@ export const autumn: EffectDefinition = {
     }
     g.stroke();
   },
-  colors: ['#d9531e', '#e8892c', '#b8321f', '#f0b13a', '#8f4a1c'],
+  colors: ['#ff6a2b', '#ffa62b', '#e63946', '#ffcf4a', '#c2571a'],
   size: [6, 17],
   speed: [28, 88],
   drift: [8, 34],
   sway: 46,
-  spin: 1.8,
-  flutter: 1.15,
-  opacity: [0.7, 1],
-  density: 1.4,
+  spin: 2,
+  flutter: 1.6,
+  opacity: [0.85, 1],
+  density: 1.8,
   windForce: 140,
   gust: 0.5,
 };

@@ -1,6 +1,7 @@
 import { bank } from '../ground';
 import type { EffectDefinition } from '../types';
-import { CLEAR, mask } from './shared';
+import { CLEAR, inFocus, mask, sheen } from './shared';
+import { crystal } from './snow';
 
 /**
  * A full winter scene: depth-of-field snowfall (tiny crisp far flakes, large out-of-focus
@@ -8,7 +9,13 @@ import { CLEAR, mask } from './shared';
  * Far and mid flakes land in the bank; the nearest flakes fall in front of it.
  */
 export const winter: EffectDefinition = {
-  draw(g, r, _color, depth) {
+  draw(g, r, _color, depth, index) {
+    // Palette slots 3-4 are crystal flakes for shape variety; the rest are soft round flakes.
+    if (index >= 3 && r > 3.2) {
+      inFocus(g, depth, r, () => crystal(g, r));
+      sheen(g, r, 0.5, 0.15);
+      return;
+    }
     g.beginPath();
     g.arc(0, 0, r, 0, 6.2832);
     g.fill();
@@ -25,12 +32,14 @@ export const winter: EffectDefinition = {
       grad.addColorStop(1, CLEAR);
     }
     mask(g, grad, r);
+    if (depth <= 0.9) sheen(g, r, 0.35, 0.12); // a little roundness on in-focus flakes
   },
-  colors: ['#ffffff', '#f1f6ff', '#dce8ff'],
+  colors: ['#ffffff', '#f1f6ff', '#dce8ff', '#eae6ff', '#e0f4ff'],
   size: [1, 12],
   speed: [14, 105],
   drift: [-6, 6],
   sway: 22,
+  spin: 0.6, // only visible on the crystal flakes
   opacity: [0.45, 1],
   density: 3.4,
   windForce: 80,
