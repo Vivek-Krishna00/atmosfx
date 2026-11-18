@@ -14,7 +14,7 @@ for (const vp of [
   { name: 'phone 390x844 @3x', width: 390, height: 844, dpr: 3 },
 ])
   for (const rate of [1, 6, 20])
-    for (const effect of ['snow', 'rain'])
+    for (const effect of (process.env.EFFECTS || 'snow,winter,rain').split(','))
       for (const quality of ['auto', 'low']) cases.push({ vp, rate, effect, quality });
 
 const browser = await chromium.launch({ channel: 'chrome', headless: !headed });

@@ -5,6 +5,30 @@ export type Quality = 'auto' | 'low' | 'medium' | 'high';
  * An effect is plain data plus one sprite-drawing function.
  * `draw` runs once per (size, color) bucket onto an offscreen canvas, never per frame.
  */
+/** A bank that builds up at the bottom of the area (e.g. snow). */
+export interface GroundSpec {
+  /** [top, bottom] fill colors. */
+  colors: readonly [string, string];
+  /** Max height in CSS px (also capped at 12% of the area height). */
+  height: number;
+  /** Seconds to reach full height. */
+  grow: number;
+  /** Occasional glints on the surface. Default true. */
+  sparkle?: boolean;
+}
+
+/** Per-instance ground state. Implemented by `bank()`; custom grounds can implement it too. */
+export interface GroundLayer {
+  /** Surface height (CSS px) per 8px column. */
+  floor: Float32Array;
+  resize(w: number, h: number, dpr: number): void;
+  /** Jump to full height (reduced motion). */
+  fill(): void;
+  update(dt: number): void;
+  /** Draw in device px with an identity transform. */
+  draw(ctx: CanvasRenderingContext2D, t: number): void;
+}
+
 export interface EffectDefinition {
   /**
    * Draw the particle centered at (0,0) within a box of radius `r`. fillStyle/strokeStyle are preset to `color`.
@@ -38,6 +62,11 @@ export interface EffectDefinition {
   twinkle?: number;
   /** Static CSS background for the effect's canvas (e.g. a frost vignette). Composited by the browser, zero per-frame cost. */
   backdrop?: string;
+  /**
+   * Accumulating bank at the bottom, e.g. `ground: bank({...})`. Far/mid particles land in it,
+   * the nearest layer passes in front. A factory so the ground code is only bundled when used.
+   */
+  ground?: () => GroundLayer;
   /** Optional full-canvas overlay drawn after particles (e.g. lightning). Must not allocate. */
   overlay?(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, dt: number): void;
 }
@@ -63,6 +92,8 @@ export interface Options {
   pauseWhenHidden?: boolean;
   /** Particles gently avoid the cursor. Default false. */
   interactive?: boolean;
+  /** Show the effect's ground layer (e.g. winter's snow bank) if it has one. Default true. */
+  ground?: boolean;
 }
 
 export interface Stats {

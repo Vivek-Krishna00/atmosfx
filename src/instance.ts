@@ -3,7 +3,7 @@ import { resolveEffect } from './registry';
 import { schedule, unschedule, type Tickable } from './scheduler';
 import { bakeSprites, type Sprite } from './sprites';
 import { depthOf, GROUPS, GROUPS_OF_LAYER, LAYERS, lerp, PARALLAX, Particles } from './store';
-import type { EffectDefinition, EffectHandle, Options, Stats } from './types';
+import type { EffectDefinition, EffectHandle, GroundLayer, Options, Stats } from './types';
 
 /** Adaptive quality steps: particle-count scale per level. Level >= 2 also forces DPR 1. */
 const COUNT_SCALE = [1, 0.75, 0.55, 0.4, 0.3];
@@ -22,6 +22,8 @@ export class Instance implements Tickable, EffectHandle {
   private spec: TierSpec = TIERS.high;
   private p: Particles = new Particles(0);
   private sprites: Sprite[] = [];
+  private ground: GroundLayer | null = null;
+  private groundSpec: unknown = undefined;
 
   private w = 0;
   private h = 0;
@@ -121,7 +123,7 @@ export class Instance implements Tickable, EffectHandle {
     const o = this.opts;
     this.applyOptions(
       o.quality !== prev.quality,
-      o.colors !== prev.colors || o.size !== prev.size || o.opacity !== prev.opacity,
+      o.colors !== prev.colors || o.size !== prev.size || o.opacity !== prev.opacity || o.ground !== prev.ground,
     );
   }
 
@@ -165,6 +167,7 @@ export class Instance implements Tickable, EffectHandle {
     this.canvas.remove();
     if (this.restorePosition && this.host) this.host.style.position = '';
     this.sprites = [];
+    this.ground = null;
   }
 
   stats(): Stats {
@@ -193,6 +196,7 @@ export class Instance implements Tickable, EffectHandle {
     // Gusts: slow, detuned sines layered on the user's wind so motion never looks mechanical.
     const gust = (this.def.gust ?? 0.2) * (Math.sin(t * 0.31) * 0.6 + Math.sin(t * 0.87 + 1.3) * 0.4);
     this.p.windPx = (this.opts.wind + gust) * (this.def.windForce ?? 120);
+    this.ground?.update(step);
     this.p.step(step, this.mx, this.my);
     this.draw(step);
   }
@@ -246,6 +250,11 @@ export class Instance implements Tickable, EffectHandle {
             ctx.drawImage(s.img, X - hf, Y - hf);
           }
         }
+      }
+      if (L === LAYERS - 2 && this.ground) {
+        // Ground sits between the mid layers and the nearest one.
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ground.draw(ctx, t);
       }
     }
     if (def.overlay) {
@@ -307,7 +316,18 @@ export class Instance implements Tickable, EffectHandle {
     const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
     const { canvas, p, def, opts } = this;
 
+    let resized = false;
+    if (rebake) {
+      const want = !!def.ground && opts.ground;
+      if (!want) this.ground = null;
+      else if (!this.ground || this.groundSpec !== def.ground) {
+        this.ground = def.ground!();
+        resized = true;
+      }
+      this.groundSpec = def.ground;
+    }
     if (w !== this.w || h !== this.h || dpr !== this.dpr) {
+      resized = true;
       // Only touch canvas size when it changes: assigning it clears and reallocates the backing store.
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -322,6 +342,9 @@ export class Instance implements Tickable, EffectHandle {
       this.sprites = bakeSprites(def, colors, opts.size, opts.opacity, dpr);
       canvas.style.background = def.backdrop ?? '';
     }
+    if (this.ground && resized && w > 0 && h > 0) this.ground.resize(w, h, dpr);
+    if (this.ground && this.reduced) this.ground.fill();
+    p.floor = this.ground ? this.ground.floor : null;
     p.configure(def, colors.length, opts.size, opts.speed);
     p.windPx = opts.wind * (def.windForce ?? 120);
 

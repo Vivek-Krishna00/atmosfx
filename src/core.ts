@@ -5,8 +5,9 @@ export { registerEffect, listEffects } from './registry';
 export { snow } from './effects/snow';
 export { rain } from './effects/rain';
 export { winter } from './effects/winter';
+export { bank } from './ground';
 export { schedulerState } from './scheduler';
-export type { EffectDefinition, EffectHandle, Options, Quality, Range, Stats } from './types';
+export type { EffectDefinition, EffectHandle, GroundLayer, GroundSpec, Options, Quality, Range, Stats } from './types';
 
 export type Target = 'page' | Element | string;
 

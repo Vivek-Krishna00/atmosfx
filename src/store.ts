@@ -1,3 +1,4 @@
+import { FLOOR_COL } from './ground';
 import type { EffectDefinition, Range } from './types';
 
 /** Depth layers, far (0) to near (LAYERS-1). Each layer gets its own baked sprites. */
@@ -45,6 +46,8 @@ export class Particles {
   speedMul = 1;
   /** Wind in px/s for the nearest layer (includes gusts; set every frame by the instance). */
   windPx = 0;
+  /** Ground surface height per FLOOR_COL column; far/mid falling particles land in it. */
+  floor: Float32Array | null = null;
 
   constructor(readonly max: number) {
     this.x = new Float32Array(max);
@@ -102,12 +105,14 @@ export class Particles {
 
   /** Advance all particles. `mx` is NaN when there is no pointer to avoid. */
   step(dt: number, mx: number, my: number): void {
-    const { x, y, vx, vy, rot, spin, phase, n, w, h, pad, sway, speedMul, windPx } = this;
+    const { x, y, vx, vy, rot, spin, phase, n, w, h, pad, sway, speedMul, windPx, floor } = this;
+    const cols = floor ? floor.length : 0;
     const spinning = this.spinMax > 0;
     const repel = mx === mx;
     const R2 = REPEL_RADIUS * REPEL_RADIUS;
     for (let i = 0; i < n; i++) {
-      const k = PARALLAX[LAYER_OF[i % GROUPS]];
+      const layer = LAYER_OF[i % GROUPS];
+      const k = PARALLAX[layer];
       const ph = (phase[i] += dt * (0.5 + (i & 3) * 0.22));
       const hx = vx[i] + windPx * k;
       // Two detuned sines read as organic flutter rather than a metronome.
@@ -138,6 +143,10 @@ export class Particles {
         (px > w + pad && hx >= 0)
       ) {
         this.spawn(i, false);
+      } else if (cols && vy[i] > 0 && layer < LAYERS - 1) {
+        // Land in the ground bank (the nearest layer is in front of it and falls past).
+        const c = (px / FLOOR_COL) | 0;
+        if (c >= 0 && c < cols && py > h - floor![c]) this.spawn(i, false);
       }
     }
   }

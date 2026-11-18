@@ -43,6 +43,7 @@ export function resolveOptions(o: Options = {}, prev?: Resolved): Resolved {
     respectReducedMotion: o.respectReducedMotion ?? p.respectReducedMotion,
     pauseWhenHidden: o.pauseWhenHidden ?? p.pauseWhenHidden,
     interactive: o.interactive ?? p.interactive,
+    ground: o.ground ?? p.ground,
     colors: o.colors?.length ? o.colors.slice(0, 5) : p.colors,
     zIndex: o.zIndex ?? p.zIndex,
   };
@@ -59,6 +60,7 @@ const DEFAULTS: Resolved = {
   respectReducedMotion: true,
   pauseWhenHidden: true,
   interactive: false,
+  ground: true,
 };
 
 /** Initial guess for `quality: 'auto'`. Adaptive quality refines it at runtime. */
@@ -92,6 +94,7 @@ export function validateEffect(name: string, d: EffectDefinition): EffectDefinit
     fail('opacity must be [far, near] within 0..1');
   if (!(typeof d.density === 'number' && d.density > 0 && isFinite(d.density))) fail('density must be a positive number');
   if (d.gust !== undefined && !(typeof d.gust === 'number' && d.gust >= 0)) fail('gust must be >= 0');
+  if (d.ground !== undefined && typeof d.ground !== 'function') fail('ground must be a factory, e.g. bank({...})');
   if (d.backdrop !== undefined && typeof d.backdrop !== 'string') fail('backdrop must be a CSS background string');
   if (d.overlay !== undefined && typeof d.overlay !== 'function') fail('overlay must be a function');
   return d;

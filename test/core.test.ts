@@ -205,3 +205,19 @@ describe('speed option', () => {
     fx.destroy();
   });
 });
+
+describe('winter ground', () => {
+  it('builds up a snow bank, lands far flakes in it, and can be turned off', () => {
+    const fx = Effects.mount(box(800, 600), 'winter', { intensity: 1 });
+    const inst = fx as unknown as { p: Particles; ground: unknown; tick(d: number): void };
+    for (let i = 0; i < 60 * 30; i++) inst.tick(1 / 60);
+    const floor = inst.p.floor!;
+    expect(floor.length).toBeGreaterThan(0);
+    expect(Math.max(...floor)).toBeGreaterThan(30);
+    expect(Math.max(...floor)).toBeLessThanOrEqual(46);
+    fx.update({ ground: false });
+    expect(inst.ground).toBeNull();
+    expect(inst.p.floor).toBeNull();
+    fx.destroy();
+  });
+});
