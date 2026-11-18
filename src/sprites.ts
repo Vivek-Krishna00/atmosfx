@@ -3,8 +3,9 @@ import type { EffectDefinition } from './types';
 
 export interface Sprite {
   img: HTMLCanvasElement;
-  /** Half the sprite's side in device px; draw at (x - half, y - half). */
+  /** Half the sprite's width / height in device px; draw at (x - half, y - halfY). */
   half: number;
+  halfY: number;
 }
 
 /**
@@ -26,16 +27,20 @@ export function bakeSprites(
     // Size grows on a curve so far layers stay tiny and only the nearest one gets big.
     const r = lerp(def.size, depth ** 1.5) * sizeMul;
     const alpha = lerp(def.opacity ?? [1, 1], depth) * opacity;
-    const half = Math.ceil(r * dpr) + 1;
-    for (const color of colors) {
+    const [bx, by] = def.box ?? [1, 1];
+    const half = Math.ceil(r * dpr * bx) + 1;
+    const halfY = Math.ceil(r * dpr * by) + 1;
+    for (let ci = 0; ci < colors.length; ci++) {
+      const color = colors[ci];
       const img = document.createElement('canvas');
-      img.width = img.height = half * 2;
+      img.width = half * 2;
+      img.height = halfY * 2;
       const g = img.getContext('2d');
       if (g) {
-        g.translate(half, half);
+        g.translate(half, halfY);
         g.scale(dpr, dpr);
         g.fillStyle = g.strokeStyle = color;
-        def.draw(g, r, color, depth);
+        def.draw(g, r, color, depth, ci);
         if (alpha < 1) {
           g.setTransform(1, 0, 0, 1, 0, 0);
           g.globalCompositeOperation = 'destination-in';
@@ -43,7 +48,7 @@ export function bakeSprites(
           g.fillRect(0, 0, img.width, img.height);
         }
       }
-      out.push({ img, half });
+      out.push({ img, half, halfY });
     }
   }
   return out;

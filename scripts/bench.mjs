@@ -1,5 +1,6 @@
 // Runs demo/bench.html in real Chrome with CDP CPU throttling and prints fps / main-thread cost.
 // Usage: npm run build && npm run bench [-- --headed]
+// Filters: EFFECTS=snow,rain RATES=6,20 QUALITIES=auto
 import { chromium } from 'playwright-core';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -13,9 +14,9 @@ for (const vp of [
   { name: 'laptop 1366x768 @1x', width: 1366, height: 768, dpr: 1 },
   { name: 'phone 390x844 @3x', width: 390, height: 844, dpr: 3 },
 ])
-  for (const rate of [1, 6, 20])
-    for (const effect of (process.env.EFFECTS || 'snow,winter,rain').split(','))
-      for (const quality of ['auto', 'low']) cases.push({ vp, rate, effect, quality });
+  for (const rate of (process.env.RATES || '1,6,20').split(',').map(Number))
+    for (const effect of (process.env.EFFECTS || 'snow,winter,rain,cherry-blossom,autumn,summer,confetti,stars,fog,thunderstorm').split(','))
+      for (const quality of (process.env.QUALITIES || 'auto,low').split(',')) cases.push({ vp, rate, effect, quality });
 
 const browser = await chromium.launch({ channel: 'chrome', headless: !headed });
 const rows = [];

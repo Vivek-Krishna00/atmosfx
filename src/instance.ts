@@ -196,7 +196,7 @@ export class Instance implements Tickable, EffectHandle {
 
   tick(dt: number): void {
     if (!this.canvas.isConnected) return this.destroy();
-    const fps = this.opts.fps || this.spec.fps;
+    const fps = this.opts.fps || Math.min(this.spec.fps, this.def.fps || 60);
     this.acc += dt;
     if (this.acc < 1 / fps - 0.002) return;
     const frame = this.acc;
@@ -222,9 +222,11 @@ export class Instance implements Tickable, EffectHandle {
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, W, H);
 
-    const { x, y, rot, spr, n } = p;
+    const { x, y, rot, phase, spr, n } = p;
     const spinning = (def.spin ?? 0) > 0;
-    const rotated = spinning || !!def.align;
+    const flutter = def.flutter ?? 0;
+    const rotated = spinning || flutter > 0 || !!def.align;
+    if (def.blend) ctx.globalCompositeOperation = def.blend;
     const tw = def.twinkle ?? 0;
     const driftMid = def.drift ? (def.drift[0] + def.drift[1]) / 2 : 0;
     let ac = 1;
@@ -247,27 +249,33 @@ export class Instance implements Tickable, EffectHandle {
         for (let i = r; i < n; i += GROUPS) {
           const s = sprites[spr[i]];
           const hf = s.half;
+          const hy = s.halfY;
           const X = x[i] * dpr;
           const Y = y[i] * dpr;
-          if (X < -hf || Y < -hf || X > W + hf || Y > H + hf) continue;
+          const hr = hf > hy ? hf : hy; // rotation-safe bound
+          if (X < -hr || Y < -hr || X > W + hr || Y > H + hr) continue;
           if (rotated) {
             if (spinning) {
               ac = Math.cos(rot[i]);
               as = Math.sin(rot[i]);
             }
-            ctx.setTransform(ac, as, -as, ac, X, Y);
-            ctx.drawImage(s.img, -hf, -hf);
+            // Flutter: squash x by cos(phase) so petals/leaves/confetti flip like they're turning in 3D.
+            const fx = flutter ? Math.cos(phase[i] * flutter) : 1;
+            ctx.setTransform(ac * fx, as * fx, -as, ac, X, Y);
+            ctx.drawImage(s.img, -hf, -hy);
           } else {
-            ctx.drawImage(s.img, X - hf, Y - hf);
+            ctx.drawImage(s.img, X - hf, Y - hy);
           }
         }
       }
       if (L === LAYERS - 2 && this.ground) {
         // Ground sits between the mid layers and the nearest one.
         ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
         this.ground.draw(ctx, t);
       }
     }
+    ctx.globalCompositeOperation = 'source-over';
     if (def.overlay) {
       ctx.globalAlpha = 1;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

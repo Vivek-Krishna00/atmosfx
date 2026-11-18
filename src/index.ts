@@ -1,7 +1,14 @@
 import { registerEffect } from './registry';
 import { snow } from './effects/snow';
-import { rain } from './effects/rain';
 import { winter } from './effects/winter';
+import { rain } from './effects/rain';
+import { cherryBlossom } from './effects/cherry-blossom';
+import { autumn } from './effects/autumn';
+import { summer } from './effects/summer';
+import { confetti } from './effects/confetti';
+import { stars } from './effects/stars';
+import { fog } from './effects/fog';
+import { thunderstorm } from './effects/thunderstorm';
 
 export * from './core';
 
@@ -10,3 +17,10 @@ export * from './core';
 registerEffect('snow', snow);
 registerEffect('winter', winter);
 registerEffect('rain', rain);
+registerEffect('cherry-blossom', cherryBlossom);
+registerEffect('autumn', autumn);
+registerEffect('summer', summer);
+registerEffect('confetti', confetti);
+registerEffect('stars', stars);
+registerEffect('fog', fog);
+registerEffect('thunderstorm', thunderstorm);

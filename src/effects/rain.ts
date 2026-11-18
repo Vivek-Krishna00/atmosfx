@@ -28,6 +28,7 @@ export const rain: EffectDefinition = {
   size: [5, 24],
   speed: [420, 1250],
   align: true,
+  box: [0.2, 1],
   opacity: [0.15, 0.5],
   density: 3.4,
   windForce: 380,

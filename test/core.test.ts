@@ -240,3 +240,40 @@ describe('winter scene', () => {
     vi.restoreAllMocks();
   });
 });
+
+describe('Effects.auto', () => {
+  it('maps months to seasons, honors overrides and hemispheres', async () => {
+    const { seasonFor } = await import('../src/core');
+    const d = (m: number) => new Date(2026, m, 15);
+    expect(seasonFor({ date: d(0) })).toBe('winter');
+    expect(seasonFor({ date: d(3) })).toBe('cherry-blossom');
+    expect(seasonFor({ date: d(6) })).toBe('summer');
+    expect(seasonFor({ date: d(9) })).toBe('autumn');
+    expect(seasonFor({ date: d(0), hemisphere: 'south' })).toBe('summer');
+    expect(seasonFor({ date: d(11), months: { 11: 'confetti' } })).toBe('confetti');
+    expect(seasonFor({ date: d(5), months: { 5: null } })).toBeNull();
+    const fx = Effects.auto(box(), {}, { date: d(5), months: { 5: null } });
+    expect(fx.stats().running).toBe(false);
+    const real = Effects.auto(box(), {}, { date: d(9) });
+    expect(real.stats().running).toBe(true);
+    real.destroy();
+  });
+});
+
+describe('every built-in effect', () => {
+  it('mounts, animates for a while, switches and cleans up', async () => {
+    const { listEffects } = await import('../src/index');
+    const names = listEffects();
+    expect(names).toEqual(expect.arrayContaining(['snow', 'winter', 'rain', 'cherry-blossom', 'autumn', 'summer', 'confetti', 'stars', 'fog', 'thunderstorm']));
+    const el = box(600, 400);
+    const fx = Effects.mount(el, names[0], { intensity: 1 });
+    const inst = fx as unknown as { tick(d: number): void };
+    for (const n of names) {
+      fx.switch(n);
+      for (let i = 0; i < 400; i++) inst.tick(1 / 60);
+      expect(fx.stats().particles).toBeGreaterThan(0);
+    }
+    fx.destroy();
+    expect(el.querySelectorAll('canvas').length).toBe(0);
+  });
+});

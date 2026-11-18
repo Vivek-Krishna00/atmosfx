@@ -43,14 +43,15 @@ export interface EffectDefinition {
   /**
    * Draw the particle centered at (0,0) within a box of radius `r`. fillStyle/strokeStyle are preset to `color`.
    * `depth` runs 0 (far) to 1 (near): use it for depth-of-field (blur near particles) or detail.
+   * `index` is the color's position in the palette; use it to vary the shape (e.g. maple vs oval leaves).
    * Runs once per (depth layer × color) when sprites are baked, never per frame.
    */
-  draw(ctx: CanvasRenderingContext2D, r: number, color: string, depth: number): void;
+  draw(ctx: CanvasRenderingContext2D, r: number, color: string, depth: number, index: number): void;
   /** Up to 5 colors; each becomes a sprite bucket. */
   colors: readonly string[];
   /** Sprite radius in CSS px, [far, near]. */
   size: Range;
-  /** Vertical speed in px/s, [far, near]. Positive falls, negative rises, 0 floats. */
+  /** Vertical speed in px/s, [far, near] (either order). Positive falls, negative rises, 0 floats. */
   speed: Range;
   /** Base horizontal speed in px/s. */
   drift?: Range;
@@ -58,6 +59,17 @@ export interface EffectDefinition {
   sway?: number;
   /** Max spin in rad/s; enables per-particle rotation when > 0. */
   spin?: number;
+  /**
+   * Sprite box as [width, height] multiples of the radius. Default [1, 1]. Narrow boxes for
+   * streaks (rain [0.2, 1]) or wide ones for banks (fog [1, 0.4]) skip drawing empty pixels.
+   */
+  box?: Range;
+  /** 3D flip rate: sprites squash and flip like petals or leaves turning over. 0 = off. */
+  flutter?: number;
+  /** Canvas blend mode for the particles, e.g. 'lighter' for glowing light motes. */
+  blend?: GlobalCompositeOperation;
+  /** Frame-rate ceiling for slow effects (e.g. fog at 30). The user's `fps` option still wins. */
+  fps?: number;
   /** Rotate every sprite to point along its fall direction (rain streaks). */
   align?: boolean;
   /** Opacity [far, near], baked into sprites. Either end may be larger (e.g. dim out-of-focus near particles). */
