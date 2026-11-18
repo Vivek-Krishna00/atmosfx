@@ -4,6 +4,7 @@ import type { EffectDefinition, EffectHandle, Options, Stats } from './types';
 export { registerEffect, listEffects } from './registry';
 export { snow } from './effects/snow';
 export { rain } from './effects/rain';
+export { winter } from './effects/winter';
 export { schedulerState } from './scheduler';
 export type { EffectDefinition, EffectHandle, Options, Quality, Range, Stats } from './types';
 

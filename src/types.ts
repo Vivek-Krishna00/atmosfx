@@ -36,6 +36,8 @@ export interface EffectDefinition {
   gust?: number;
   /** Twinkle: particle groups pulse at about this rate (Hz). 0 = off. */
   twinkle?: number;
+  /** Static CSS background for the effect's canvas (e.g. a frost vignette). Composited by the browser, zero per-frame cost. */
+  backdrop?: string;
   /** Optional full-canvas overlay drawn after particles (e.g. lightning). Must not allocate. */
   overlay?(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, dt: number): void;
 }

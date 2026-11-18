@@ -187,3 +187,21 @@ describe('adaptive quality', () => {
     fx.destroy();
   });
 });
+
+describe('speed option', () => {
+  it('scales fall speed live via update()', () => {
+    const fx = Effects.mount(box(400, 4000), 'snow', { speed: 1 });
+    const p = (fx as unknown as { p: Particles }).p;
+    const fall = () => {
+      const y0 = Float32Array.from(p.y);
+      p.step(0.016, NaN, NaN);
+      let s = 0;
+      for (let i = 0; i < p.n; i++) s += p.y[i] - y0[i];
+      return s;
+    };
+    const base = fall();
+    fx.update({ speed: 2.5 });
+    expect(fall() / base).toBeCloseTo(2.5, 1);
+    fx.destroy();
+  });
+});

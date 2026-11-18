@@ -320,6 +320,7 @@ export class Instance implements Tickable, EffectHandle {
     const colors = opts.colors ?? def.colors;
     if (rebake) {
       this.sprites = bakeSprites(def, colors, opts.size, opts.opacity, dpr);
+      canvas.style.background = def.backdrop ?? '';
     }
     p.configure(def, colors.length, opts.size, opts.speed);
     p.windPx = opts.wind * (def.windForce ?? 120);
