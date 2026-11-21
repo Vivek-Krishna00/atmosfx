@@ -9,20 +9,20 @@ Small canvas effects with no dependencies: snow, rain, cherry blossom, autumn le
 ## Install
 
 ```sh
-npm install atmosfx
+npm install @vivekkrishna30/atmosfx
 ```
 
 Or from a CDN, which exposes a global `atmosfx`:
 
 ```html
-<script src="https://unpkg.com/atmosfx"></script>
+<script src="https://unpkg.com/@vivekkrishna30/atmosfx"></script>
 <script>atmosfx.Effects.mount('page', 'snow');</script>
 ```
 
 ## Usage
 
 ```js
-import { Effects } from 'atmosfx';
+import { Effects } from '@vivekkrishna30/atmosfx';
 
 // Whole page
 const fx = Effects.mount('page', 'snow', { intensity: 0.6, wind: 0.2 });
@@ -44,10 +44,10 @@ Built-in effects: `snow`, `winter`, `rain`, `thunderstorm`, `cherry-blossom`, `a
 
 ### Smallest bundle
 
-`atmosfx/core` doesn't register any effects by name. Import only the effects you use and pass them in directly:
+`@vivekkrishna30/atmosfx/core` doesn't register any effects by name. Import only the effects you use and pass them in directly:
 
 ```js
-import { Effects, snow } from 'atmosfx/core';
+import { Effects, snow } from '@vivekkrishna30/atmosfx/core';
 
 Effects.mount('page', snow);
 ```
@@ -87,7 +87,7 @@ Effects.auto('page', {}, {
 An effect is plain data plus one `draw` function. `draw` renders a sprite once, ahead of time, never on every frame:
 
 ```js
-import { Effects, registerEffect } from 'atmosfx';
+import { Effects, registerEffect } from '@vivekkrishna30/atmosfx';
 
 registerEffect('bubbles', {
   colors: ['#9cf', '#cef'],

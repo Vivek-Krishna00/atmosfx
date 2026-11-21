@@ -1,5 +1,5 @@
 {
-  "name": "atmosfx",
+  "name": "@vivekkrishna30/atmosfx",
   "version": "0.1.0",
   "description": "Tiny, zero-dependency canvas effects (snow, rain, cherry blossom, autumn leaves...) for a whole page or a single element. Built to run on a potato.",
   "license": "MIT",
@@ -79,5 +79,8 @@
   "homepage": "https://github.com/Vivek-Krishna00/atmosfx#readme",
   "bugs": {
     "url": "https://github.com/Vivek-Krishna00/atmosfx/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
