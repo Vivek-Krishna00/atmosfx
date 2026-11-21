@@ -2,7 +2,7 @@
 
 Small canvas effects with no dependencies: snow, rain, cherry blossom, autumn leaves, confetti and more. Run one over the whole page or inside a single element. Built to run on a potato.
 
-- About 6 kB gzipped for the core engine plus one effect. All 10 effects together are about 12.5 kB.
+- About 6 kB gzipped for the core engine plus one effect. All 10 effects together are about 13.5 kB.
 - Adapts quality to the device, pauses when the tab is hidden, and respects `prefers-reduced-motion`.
 - Safe to import during server-side rendering: with no DOM it returns a handle that does nothing.
 
