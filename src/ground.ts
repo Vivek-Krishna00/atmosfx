@@ -12,7 +12,97 @@ const newCanvas = () => document.createElement('canvas');
 /** Ease-out: builds quickly at first, then settles. */
 const ease = (l: number) => 1 - (1 - l) * (1 - l);
 const ICE_TOP = 'rgba(244,250,255,0.95)';
-const ICE_TIP = 'rgba(190,220,255,0.25)';
+const ICE_MID = 'rgba(214,234,255,0.6)';
+const ICE_TIP = 'rgba(190,220,255,0.3)';
+const RIM = 'rgba(248,251,255,0.95)';
+const smooth = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
+
+/**
+ * One icicle: root (x, y), pointing along angle `a`. `len` is its full length, `delay` (0..0.5) when it
+ * starts forming and `ph`/`bend` give it its own ripples and curve, so no two look stamped out.
+ */
+interface Ice {
+  x: number;
+  y: number;
+  a: number;
+  hw: number;
+  len: number;
+  delay: number;
+  ph: number;
+  bend: number;
+}
+
+/** Current length: each icicle starts at its own time and eases in, so they don't grow in lockstep. */
+const iceLen = (c: Ice, level: number) => c.len * smooth((level - c.delay) / (1 - c.delay));
+
+/** An icicle rooted at (x, y) pointing along `a`, with seeded timing, ripples and curve. */
+function makeIce(rand: () => number, x: number, y: number, a: number, hw: number, len: number): Ice {
+  return { x, y, a, hw, len, delay: rand() * 0.45, ph: rand() * TAU, bend: (rand() - 0.5) * 0.16 };
+}
+
+const STEPS = 10;
+/**
+ * Organic icicle: a tapered body with slow ripples (refrozen meltwater), a slight curve and a
+ * rounded tip, filled with its own gradient so short icicles fade at their tips too.
+ */
+function drawIce(g: CanvasRenderingContext2D, c: Ice, len: number): void {
+  if (len < 0.8) return;
+  const ux = Math.cos(c.a);
+  const uy = Math.sin(c.a);
+  // perpendicular
+  const px = -uy;
+  const py = ux;
+  const hw = c.hw * (0.55 + 0.45 * Math.min(1, len / 6)); // young icicles are thin buds
+  const L: number[] = [];
+  const R: number[] = [];
+  for (let s = 0; s <= STEPS; s++) {
+    const t = s / STEPS;
+    const off = c.bend * len * t * t;
+    const cx = c.x + ux * len * t + px * off;
+    const cy = c.y + uy * len * t + py * off;
+    // Concave taper (thick root, long thin tip), a fillet where it joins the rim, and ripples.
+    const root = 1 + 0.7 * Math.max(0, 1 - t / 0.14) ** 2;
+    const body = hw * root * Math.pow(1 - t, 1.45) * (1 + 0.35 * Math.sin(t * 13 + c.ph) * t * (1 - t));
+    const w = Math.max(body, 0.55 * (1 - t)); // keep thin tails visible instead of fading to nothing
+    L.push(cx + px * w, cy + py * w);
+    R.push(cx - px * w, cy - py * w);
+  }
+  const tipX = L[STEPS * 2];
+  const tipY = L[STEPS * 2 + 1];
+  const grad = g.createLinearGradient(c.x, c.y, tipX, tipY);
+  grad.addColorStop(0, ICE_TOP);
+  grad.addColorStop(0.55, ICE_MID);
+  grad.addColorStop(1, ICE_TIP);
+  g.beginPath();
+  g.moveTo(L[0], L[1]);
+  // Quadratic curves through segment midpoints: a smooth outline, no visible corners.
+  for (let s = 1; s < STEPS; s++) {
+    g.quadraticCurveTo(L[s * 2], L[s * 2 + 1], (L[s * 2] + L[s * 2 + 2]) / 2, (L[s * 2 + 1] + L[s * 2 + 3]) / 2);
+  }
+  g.quadraticCurveTo(tipX + ux * hw * 0.15, tipY + uy * hw * 0.15, R[STEPS * 2], R[STEPS * 2 + 1]);
+  for (let s = STEPS - 1; s > 0; s--) {
+    g.quadraticCurveTo(R[s * 2], R[s * 2 + 1], (R[s * 2] + R[s * 2 - 2]) / 2, (R[s * 2 + 1] + R[s * 2 - 1]) / 2);
+  }
+  g.lineTo(R[0], R[1]);
+  g.closePath();
+  g.fillStyle = grad;
+  g.fill();
+  if (len < 5) return;
+  // Soft specular streak down one side, fading out before the tip.
+  const k = 0.4;
+  const hx = (i: number) => L[i * 2] * (1 - k) + (L[i * 2] + R[i * 2]) / 2 * k;
+  const hy = (i: number) => L[i * 2 + 1] * (1 - k) + (L[i * 2 + 1] + R[i * 2 + 1]) / 2 * k;
+  const hl = g.createLinearGradient(c.x, c.y, tipX, tipY);
+  hl.addColorStop(0, 'rgba(255,255,255,0.75)');
+  hl.addColorStop(0.6, 'rgba(255,255,255,0)');
+  g.beginPath();
+  g.moveTo(hx(1), hy(1));
+  g.quadraticCurveTo(hx(3), hy(3), hx(6), hy(6));
+  g.strokeStyle = hl;
+  g.lineWidth = Math.max(0.6, hw * 0.3);
+  g.lineCap = 'round';
+  g.stroke();
+}
 
 /** Tiny soft sprite (glints, drips). */
 function dot(dpr: number, r: number, star: boolean): HTMLCanvasElement {
@@ -40,9 +130,19 @@ function dot(dpr: number, r: number, star: boolean): HTMLCanvasElement {
   return c;
 }
 
+/** Per-element snow cap, plus icicles hanging from the element's bottom edge. */
+interface Cap {
+  cv: HTMLCanvasElement;
+  ice: HTMLCanvasElement;
+  icicles: Ice[];
+  w: number;
+  radius: number;
+}
+
 /**
  * Winter scene for an effect: an accumulating snow bank, frost creeping in from the corners,
- * icicles along the top edge with occasional drips, and snow caps on chosen elements.
+ * icicles along the top edge (with occasional drips) and slanting in from the side edges,
+ * and snow caps with small icicles on chosen elements.
  *
  * Bank, frost and icicles only change while growing, so they go to the instance's static
  * layer (repainted a few dozen times in total). Per frame we only draw glints, drips and caps.
@@ -67,11 +167,9 @@ class Scene implements GroundLayer {
   private readonly sx = new Float32Array(SPARKLES);
   private glint: HTMLCanvasElement | null = null;
 
-  // icicles: per-icicle x, half-width, relative length
-  private ix: number[] = [];
-  private iw: number[] = [];
-  private il: number[] = [];
-  private iceH = 0;
+  // icicles: along the top edge (these drip) and slanting in from the side edges
+  private ice: Ice[] = [];
+  private side: Ice[] = [];
   private drop: HTMLCanvasElement | null = null;
   private readonly dx = new Float32Array(DRIPS);
   private readonly dy = new Float32Array(DRIPS);
@@ -87,11 +185,12 @@ class Scene implements GroundLayer {
   // caps
   private els: HTMLElement[] = [];
   private origin: HTMLElement | null = null;
-  private caps: Array<{ cv: HTMLCanvasElement; w: number; radius: number }> = [];
-  private rects = new Float32Array(0); // x, y, w per element
+  private caps: Cap[] = [];
+  private rects = new Float32Array(0); // x, y, w, h per element
   private capsDirty = true;
   private capsAge = 0;
   private capsH = -1;
+  private capsL = -1; // level the caps and their icicles were last painted at
   private offScroll: (() => void) | null = null;
 
   constructor(private readonly spec: GroundSpec) {
@@ -150,8 +249,9 @@ class Scene implements GroundLayer {
 
   private grow(dt: number): void {
     this.level = Math.min(1, this.level + dt / this.spec.grow);
-    // Repaint the static layer in ~40 steps over the whole build-up, not every frame.
-    if (this.painted >= 0 && this.level - this.painted < 0.025 && this.level < 1) return;
+    // Repaint the static layer in ~200 steps over the build-up (a few per second, each well under a
+    // pixel of growth) rather than every frame. Coarser steps made the ice visibly jump.
+    if (this.painted >= 0 && this.level - this.painted < 0.005 && this.level < 1) return;
     if (this.painted === 1) return;
     this.painted = this.level;
     const H = this.bankH * ease(this.level);
@@ -174,7 +274,7 @@ class Scene implements GroundLayer {
     g.clearRect(0, 0, g.canvas.width, g.canvas.height);
     if (this.frostR) this.paintFrost(g, l);
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (this.spec.icicles) this.paintIcicles(g, l);
+    if (this.spec.icicles) this.paintIcicles(g, l, this.level);
     const H = this.bankH * l;
     if (H < 0.5) return;
     g.beginPath();
@@ -202,86 +302,87 @@ class Scene implements GroundLayer {
 
   private genIcicles(): void {
     const rand = rng(this.seed);
-    this.iceH = Math.min(56, this.h * 0.09);
-    this.ix = [];
-    this.iw = [];
-    this.il = [];
-    for (let x = rand() * 10; x < this.w; ) {
-      const hw = 1.5 + rand() * 3.5;
+    const { w, h } = this;
+    const maxLen = Math.min(56, h * 0.09);
+    this.ice = [];
+    for (let x = rand() * 10; x < w; ) {
+      const hw = 2 + rand() * 3.5;
       // Clustered lengths: long ones bunch together like on a real eave.
       const cluster = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(x * 0.017 + this.phase[0]));
-      this.ix.push(x);
-      this.iw.push(hw);
-      this.il.push((0.15 + 0.85 * rand() ** 1.8) * cluster);
+      const len = (0.15 + 0.85 * rand() ** 1.8) * cluster * maxLen;
+      this.ice.push(makeIce(rand, x, 2.5, Math.PI / 2 + (rand() - 0.5) * 0.06, hw, len));
       x += hw * 2 * (0.7 + rand() * 1.8);
+    }
+    // Side edges: shorter, sparser icicles slanting down and inward, thinning out toward the bottom.
+    this.side = [];
+    const sideLen = Math.min(46, w * 0.07);
+    for (const dir of [1, -1]) {
+      for (let y = 10 + rand() * 20; y < h * 0.8; ) {
+        const fade = 1 - y / (h * 0.8);
+        const len = (0.3 + 0.7 * rand()) * (0.35 + 0.65 * fade) * sideLen;
+        const tilt = 0.08 + rand() * 0.22; // hangs nearly straight down, leaning off the edge
+        const a = Math.PI / 2 - dir * tilt;
+        this.side.push(makeIce(rand, dir > 0 ? 1 : w - 1, y, a, 2 + rand() * 1.8, len));
+        y += 14 + rand() * 34 + (1 - fade) * 30;
+      }
     }
     this.drop = dot(this.dpr, 1.6, false);
   }
 
-  private paintIcicles(g: CanvasRenderingContext2D, l: number): void {
-    const { w } = this;
+  private paintIcicles(g: CanvasRenderingContext2D, l: number, level: number): void {
+    const { w, h } = this;
     const rim = 3 + 3 * l;
-    const L = this.iceH * l;
     // Snow rim along the top edge the icicles hang from.
     g.beginPath();
     g.moveTo(0, 0);
     for (let x = 0; x <= w + 6; x += 6) g.lineTo(x, rim * (0.7 + 0.3 * Math.sin(x * 0.05 + this.phase[1])));
     g.lineTo(w, 0);
     g.closePath();
-    g.fillStyle = 'rgba(248,251,255,0.95)';
+    g.fillStyle = RIM;
     g.fill();
-    if (L < 1) return;
-    const grad = g.createLinearGradient(0, 0, 0, rim + L);
-    grad.addColorStop(0, ICE_TOP);
-    grad.addColorStop(1, ICE_TIP);
-    g.beginPath();
-    for (let i = 0; i < this.ix.length; i++) {
-      const x = this.ix[i];
-      const hw = this.iw[i];
-      const len = this.il[i] * L;
-      if (len < 1) continue;
-      const top = rim * 0.6;
-      g.moveTo(x - hw, top);
-      g.quadraticCurveTo(x - hw * 0.25, top + len * 0.55, x, top + len);
-      g.quadraticCurveTo(x + hw * 0.3, top + len * 0.5, x + hw, top);
+    // A thin glaze of ice down each side edge, thickest at the top.
+    const glaze = 1 + 2.5 * l;
+    g.fillStyle = 'rgba(225,240,255,0.55)';
+    for (const side of [0, 1]) {
+      g.beginPath();
+      const ex = side ? w : 0;
+      const s = side ? -1 : 1;
+      g.moveTo(ex, 0);
+      for (let y = 0; y <= h * 0.85; y += 8) {
+        const t = 1 - y / (h * 0.85);
+        g.lineTo(ex + s * glaze * t * (0.7 + 0.3 * Math.sin(y * 0.04 + this.phase[side + 1])), y);
+      }
+      g.lineTo(ex, h * 0.85);
+      g.closePath();
+      g.fill();
     }
-    g.fillStyle = grad;
-    g.fill();
-    // Specular highlight down the left side of each icicle.
-    g.beginPath();
-    for (let i = 0; i < this.ix.length; i++) {
-      const len = this.il[i] * L;
-      if (len < 4) continue;
-      const x = this.ix[i] - this.iw[i] * 0.35;
-      g.moveTo(x, rim);
-      g.lineTo(x + this.iw[i] * 0.2, rim + len * 0.55);
-    }
-    g.strokeStyle = 'rgba(255,255,255,0.7)';
-    g.lineWidth = 0.8;
-    g.stroke();
+    for (const c of this.side) drawIce(g, c, iceLen(c, level));
+    for (const c of this.ice) drawIce(g, c, iceLen(c, level));
   }
 
   private tickDrips(dt: number): void {
-    const n = this.ix.length;
+    const n = this.ice.length;
     if (!n || this.level < 0.6) return;
     if ((this.dripIn -= dt) <= 0) {
       this.dripIn = 0.8 + Math.random() * 2.4;
       for (let d = 0; d < DRIPS; d++) {
         if (this.dl[d] > 0) continue;
-        const i = (Math.random() * n) | 0;
-        if (this.il[i] < 0.45) break; // only long icicles drip
-        this.dx[d] = this.ix[i];
-        this.dy[d] = 3 + 3 * ease(this.level) + this.il[i] * this.iceH * ease(this.level);
+        const c = this.ice[(Math.random() * n) | 0];
+        const len = iceLen(c, this.level);
+        if (len < 20) break; // only long icicles drip
+        // Start at the (curved) tip.
+        this.dx[d] = c.x + Math.cos(c.a) * len - Math.sin(c.a) * c.bend * len;
+        this.dy[d] = c.y + Math.sin(c.a) * len + Math.cos(c.a) * c.bend * len;
         this.dv[d] = 0;
-        this.dl[d] = 0.9;
+        this.dl[d] = 1.4;
         break;
       }
     }
     for (let d = 0; d < DRIPS; d++) {
       if (this.dl[d] <= 0) continue;
       this.dl[d] -= dt;
-      if (this.dl[d] < 0.65) {
-        // hang briefly, then fall
+      if (this.dl[d] < 0.6) {
+        // swell at the tip for a moment, then fall
         this.dv[d] += 1400 * dt;
         this.dy[d] += this.dv[d] * dt;
       }
@@ -374,10 +475,11 @@ class Scene implements GroundLayer {
     const els = Array.prototype.filter.call(list, (el: Element) => el instanceof HTMLElement && el !== exclude) as HTMLElement[];
     this.els = els;
     this.origin = this.main;
-    this.caps = els.map(() => ({ cv: newCanvas(), w: -1, radius: 0 }));
-    this.rects = new Float32Array(els.length * 3);
+    this.caps = els.map(() => ({ cv: newCanvas(), ice: newCanvas(), icicles: [], w: -1, radius: 0 }));
+    this.rects = new Float32Array(els.length * 4);
     this.capsDirty = true;
     this.capsH = -1;
+    this.capsL = -1;
     if (els.length && !this.offScroll) {
       const onScroll = () => (this.capsDirty = true);
       // capture: also catch scrolling inside nested scroll containers
@@ -394,22 +496,30 @@ class Scene implements GroundLayer {
     this.capsAge = 0;
     const o = this.origin!.getBoundingClientRect();
     const H = 12 * ease(this.level);
-    const repaintAll = Math.abs(H - this.capsH) * this.dpr >= 1;
-    if (repaintAll) this.capsH = H;
+    // Small steps while growing so caps and their icicles build up smoothly.
+    const repaintAll = this.level - this.capsL >= 0.01 || (this.level === 1 && this.capsL < 1);
+    if (repaintAll) {
+      this.capsH = H;
+      this.capsL = this.level;
+    }
     for (let i = 0; i < this.els.length; i++) {
       const el = this.els[i];
       const r = el.getBoundingClientRect();
-      this.rects[i * 3] = r.left - o.left;
-      this.rects[i * 3 + 1] = r.top - o.top;
-      this.rects[i * 3 + 2] = el.isConnected ? r.width : 0;
+      const q = i * 4;
+      this.rects[q] = r.left - o.left;
+      this.rects[q + 1] = r.top - o.top;
+      this.rects[q + 2] = el.isConnected ? r.width : 0;
+      this.rects[q + 3] = r.height;
       const cap = this.caps[i];
-      if (repaintAll || Math.abs(cap.w - r.width) >= 1) this.paintCap(cap, el, r.width);
+      if (repaintAll || Math.abs(cap.w - r.width) >= 1) this.paintCap(cap, el, r.width, i);
     }
   }
 
-  private paintCap(cap: { cv: HTMLCanvasElement; w: number; radius: number }, el: HTMLElement, w: number): void {
+  private paintCap(cap: Cap, el: HTMLElement, w: number, index: number): void {
     if (cap.w < 0) cap.radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+    if (Math.abs(cap.w - w) >= 1) cap.icicles = this.genCapIce(w, cap.radius, index);
     cap.w = w;
+    this.paintCapIce(cap, w);
     const { dpr } = this;
     const H = this.capsH;
     const cv = cap.cv;
@@ -441,6 +551,31 @@ class Scene implements GroundLayer {
     g.fill();
   }
 
+  /** Small icicles along an element's bottom edge, kept clear of its rounded corners. */
+  private genCapIce(w: number, radius: number, index: number): Ice[] {
+    const rand = rng(this.seed ^ Math.imul(index + 1, 0x85ebca6b));
+    const maxLen = Math.min(18, w * 0.09);
+    const out: Ice[] = [];
+    const x1 = w + 2 - radius * 0.6 - 3;
+    for (let x = 2 + radius * 0.6 + 3 + rand() * 6; x < x1; ) {
+      const hw = 0.9 + rand() * 1.6;
+      out.push(makeIce(rand, x, 0.5, Math.PI / 2 + (rand() - 0.5) * 0.08, hw, (0.2 + 0.8 * rand() ** 1.6) * maxLen));
+      x += 6 + rand() * 22;
+    }
+    return out;
+  }
+
+  private paintCapIce(cap: Cap, w: number): void {
+    const { dpr } = this;
+    const cv = cap.ice;
+    cv.width = Math.max(1, Math.ceil((w + 4) * dpr));
+    cv.height = Math.max(1, Math.ceil(22 * dpr));
+    const g = cv.getContext('2d');
+    if (!g || !cap.icicles.length) return;
+    g.scale(dpr, dpr);
+    for (const c of cap.icicles) drawIce(g, c, iceLen(c, this.level));
+  }
+
   // ---- per frame ----------------------------------------------------------
 
   draw(ctx: CanvasRenderingContext2D, t: number): void {
@@ -463,18 +598,25 @@ class Scene implements GroundLayer {
       for (let d = 0; d < DRIPS; d++) {
         if (this.dl[d] <= 0) continue;
         ctx.globalAlpha = Math.min(1, this.dl[d] * 2) * 0.85;
-        ctx.drawImage(this.drop, this.dx[d] * dpr - half, this.dy[d] * dpr - half);
+        // A bead swells at the tip, then detaches at full size.
+        const s = this.dl[d] > 0.6 ? 0.25 + 0.75 * smooth((1.4 - this.dl[d]) / 0.8) : 1;
+        const sh = half * s;
+        ctx.drawImage(this.drop, this.dx[d] * dpr - sh, this.dy[d] * dpr - sh * 0.3, sh * 2, sh * 2);
       }
     }
     ctx.globalAlpha = 1;
     if (!this.els.length) return;
     if (this.capsDirty) this.readRects();
     for (let i = 0; i < this.els.length; i++) {
-      const w = this.rects[i * 3 + 2];
-      const y = this.rects[i * 3 + 1];
-      if (!w || y < -20 || y > h + 20) continue;
-      const cv = this.caps[i].cv;
-      ctx.drawImage(cv, Math.round((this.rects[i * 3] - 2) * dpr), Math.round((y - this.capsH - 4) * dpr));
+      const q = i * 4;
+      const w = this.rects[q + 2];
+      const y = this.rects[q + 1];
+      const bottom = y + this.rects[q + 3];
+      if (!w || bottom < -24 || y > h + 20) continue;
+      const x = Math.round((this.rects[q] - 2) * dpr);
+      const cap = this.caps[i];
+      if (y > -20) ctx.drawImage(cap.cv, x, Math.round((y - this.capsH - 4) * dpr));
+      if (cap.icicles.length && bottom < h) ctx.drawImage(cap.ice, x, Math.round(bottom * dpr));
     }
   }
 
