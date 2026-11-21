@@ -4,7 +4,11 @@
   "description": "Tiny, zero-dependency canvas effects (snow, rain, cherry blossom, autumn leaves...) for a whole page or a single element. Built to run on a potato.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/index.js",
+    "./dist/index.cjs",
+    "./dist/atmosfx.global.js"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,7 +38,9 @@
   "unpkg": "./dist/atmosfx.global.js",
   "jsdelivr": "./dist/atmosfx.global.js",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -42,7 +48,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "size": "node scripts/size.mjs",
-    "bench": "node scripts/bench.mjs"
+    "bench": "node scripts/bench.mjs",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "keywords": [
     "snow",
@@ -63,5 +70,14 @@
     "tsup": "^9.0.0",
     "typescript": "^5.9.3",
     "vitest": "^5.1.0"
+  },
+  "author": "Vivek-Krishna00",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vivek-Krishna00/atmosfx.git"
+  },
+  "homepage": "https://github.com/Vivek-Krishna00/atmosfx#readme",
+  "bugs": {
+    "url": "https://github.com/Vivek-Krishna00/atmosfx/issues"
   }
 }
