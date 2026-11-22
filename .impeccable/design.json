@@ -1,484 +1,450 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-22T07:06:23+00:00",
+  "generatedAt": "2026-11-22T08:44:47+00:00",
   "title": "Design System: atmosfx",
   "extensions": {
     "colorMeta": {
-      "lamp": {
+      "yellow": {
         "role": "primary",
-        "displayName": "Street Lamp Amber",
-        "canonical": "#ffc861",
+        "displayName": "Station Yellow",
+        "canonical": "#f4c430",
         "tonalRamp": [
-          "#3c2d10",
-          "#725113",
-          "#ae770f",
-          "#f29f03",
-          "#f4b339",
-          "#edc478",
-          "#eddab5",
-          "#f8f4ec"
+          "#0f0b02",
+          "#302300",
+          "#573e00",
+          "#815a00",
+          "#a47c00",
+          "#bea258",
+          "#d8c89e",
+          "#f5eedd"
         ]
       },
-      "lamp-deep": {
+      "yellow-hi": {
         "role": "primary",
-        "displayName": "Lamp Brass",
-        "canonical": "#e9a63a",
+        "displayName": "Lamp-Hot Yellow",
+        "canonical": "#ffd659",
         "tonalRamp": [
-          "#382a15",
-          "#684b1d",
-          "#9e6d1f",
-          "#da911b",
-          "#e1a84c",
-          "#e1bd84",
-          "#e8d6bb",
-          "#f7f3ee"
+          "#0f0b02",
+          "#2f2400",
+          "#543f00",
+          "#7d5c00",
+          "#9f7e00",
+          "#bba360",
+          "#d6c8a2",
+          "#f4eede"
         ]
       },
-      "lamp-ink": {
+      "yellow-ink": {
         "role": "primary",
-        "displayName": "Lamp Soot",
-        "canonical": "#241503",
+        "displayName": "Sign Ink",
+        "canonical": "#141414",
         "tonalRamp": [
-          "#392813",
-          "#6a461a",
-          "#a2641b",
-          "#df8415",
-          "#e59e48",
-          "#e4b781",
-          "#e9d3b9",
-          "#f7f3ed"
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
         ]
       },
-      "brick": {
+      "green": {
         "role": "secondary",
-        "displayName": "Facade Brick",
-        "canonical": "#7a3324",
+        "displayName": "Signal Green",
+        "canonical": "#3fbf6f",
         "tonalRamp": [
-          "#321e1a",
-          "#5c3229",
-          "#8a4233",
-          "#bb5039",
-          "#c97564",
-          "#d29e93",
-          "#e0c7c2",
-          "#f5f0ef"
+          "#040e06",
+          "#092d16",
+          "#005026",
+          "#007736",
+          "#2c9a56",
+          "#73b786",
+          "#add5b7",
+          "#e3f3e7"
         ]
       },
-      "brick-deep": {
-        "role": "secondary",
-        "displayName": "Shadowed Brick",
-        "canonical": "#5a2418",
-        "tonalRamp": [
-          "#331e19",
-          "#5e3127",
-          "#8c4130",
-          "#c04e35",
-          "#cc7460",
-          "#d49d91",
-          "#e1c7c1",
-          "#f6f0ef"
-        ]
-      },
-      "mortar": {
-        "role": "secondary",
-        "displayName": "Mortar",
-        "canonical": "#4a1d14",
-        "tonalRamp": [
-          "#331e1a",
-          "#5d3027",
-          "#8c4031",
-          "#bf4d36",
-          "#cc7361",
-          "#d49c91",
-          "#e1c6c1",
-          "#f6f0ef"
-        ],
-        "note": "Used as a literal inside the facade's mortar SVG data URI."
-      },
-      "enamel": {
-        "role": "tertiary",
-        "displayName": "Enamel Blue",
-        "canonical": "#0f2f52",
-        "tonalRamp": [
-          "#172636",
-          "#224163",
-          "#275c95",
-          "#2877cd",
-          "#5694d7",
-          "#8ab1db",
-          "#bed0e5",
-          "#eef2f6"
-        ]
-      },
-      "night": {
+      "housing": {
         "role": "neutral",
-        "displayName": "Night",
-        "canonical": "#0d1726",
+        "displayName": "Board Housing",
+        "canonical": "#0b0c0e",
         "tonalRamp": [
-          "#1b2431",
-          "#2b3e59",
-          "#375785",
-          "#406fb5",
-          "#698dc4",
-          "#96adcf",
-          "#c3cedf",
-          "#eff2f5"
+          "#0b0b0b",
+          "#252526",
+          "#414243",
+          "#606163",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeeef"
         ]
       },
-      "street": {
+      "board": {
         "role": "neutral",
-        "displayName": "Street",
-        "canonical": "#0a111c",
+        "displayName": "Board Black",
+        "canonical": "#111214",
         "tonalRamp": [
-          "#1c2431",
-          "#2c3d59",
-          "#395684",
-          "#426eb3",
-          "#6a8dc3",
-          "#97acce",
-          "#c4cede",
-          "#eff2f5"
+          "#0b0b0b",
+          "#252526",
+          "#414243",
+          "#606163",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeeef"
         ]
       },
-      "stone": {
+      "tile-hi": {
         "role": "neutral",
-        "displayName": "Sill Stone",
-        "canonical": "#d8d2c6",
+        "displayName": "Tile Highlight",
+        "canonical": "#27292e",
         "tonalRamp": [
-          "#2a2822",
-          "#4b4539",
-          "#6d634f",
-          "#918264",
-          "#a89c85",
-          "#bdb6a8",
-          "#d6d3cc",
-          "#f3f3f1"
+          "#0b0b0c",
+          "#242527",
+          "#414245",
+          "#5f6166",
+          "#808288",
+          "#a3a5a9",
+          "#c8c9cb",
+          "#eeeeef"
         ]
       },
-      "stone-ink": {
+      "tile-lo": {
         "role": "neutral",
-        "displayName": "Stone Ink",
-        "canonical": "#2b2520",
+        "displayName": "Tile Shadow",
+        "canonical": "#17181b",
         "tonalRamp": [
-          "#2a2623",
-          "#49423b",
-          "#6a5d53",
-          "#8c7969",
-          "#a49589",
-          "#bbb2aa",
-          "#d5d1cd",
-          "#f3f2f1"
+          "#0b0b0c",
+          "#252526",
+          "#414244",
+          "#606164",
+          "#818286",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeeef"
         ]
       },
-      "frame": {
+      "glyph": {
         "role": "neutral",
-        "displayName": "Frame Paint",
-        "canonical": "#e9e4da",
+        "displayName": "Flap Glyph",
+        "canonical": "#f2f0ea",
         "tonalRamp": [
-          "#2c2821",
-          "#4e4636",
-          "#73654a",
-          "#99855c",
-          "#ae9e7f",
-          "#c1b7a4",
-          "#d8d3ca",
-          "#f4f3f1"
-        ],
-        "note": "Literal #e9e4da in source (frame border and glazing bars); not a :root custom property."
+          "#0b0b0b",
+          "#252523",
+          "#43423f",
+          "#63615d",
+          "#84827d",
+          "#a6a5a1",
+          "#cac9c7",
+          "#efeeed"
+        ]
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Moonlit Ink",
-        "canonical": "#eef2f8",
+        "displayName": "Ink",
+        "canonical": "#f2f0ea",
         "tonalRamp": [
-          "#1d242f",
-          "#2f3e56",
-          "#3d5880",
-          "#4970ac",
-          "#708fbd",
-          "#9aaecb",
-          "#c5cfdd",
-          "#f0f2f5"
+          "#0b0b0b",
+          "#252523",
+          "#43423f",
+          "#63615d",
+          "#84827d",
+          "#a6a5a1",
+          "#cac9c7",
+          "#efeeed"
         ]
       },
       "ink-dim": {
         "role": "neutral",
-        "displayName": "Dusk Ink",
-        "canonical": "#b4c1d4",
+        "displayName": "Dim Ink",
+        "canonical": "#a9adb5",
         "tonalRamp": [
-          "#20252c",
-          "#35404f",
-          "#495a74",
-          "#5a749b",
-          "#7d92b0",
-          "#a3b0c2",
-          "#c9d0d9",
-          "#f1f2f4"
+          "#0b0b0c",
+          "#242527",
+          "#404246",
+          "#5e6168",
+          "#7f8289",
+          "#a3a5aa",
+          "#c8c9cc",
+          "#eeeef0"
         ]
       },
       "line": {
         "role": "neutral",
-        "displayName": "Gutter Line",
-        "canonical": "#2a3c57",
+        "displayName": "Seam",
+        "canonical": "#2c2e33",
         "tonalRamp": [
-          "#1f252e",
-          "#323f53",
-          "#43597a",
-          "#5172a4",
-          "#7690b7",
-          "#9eaec7",
-          "#c7cfdb",
-          "#f0f2f4"
+          "#0b0b0c",
+          "#242527",
+          "#414245",
+          "#5f6166",
+          "#808287",
+          "#a3a5a9",
+          "#c8c9cb",
+          "#eeeeef"
         ]
       },
-      "code-ground": {
+      "paper": {
         "role": "neutral",
-        "displayName": "Code Ground",
-        "canonical": "#070c14",
+        "displayName": "Ticket Paper",
+        "canonical": "#efece4",
         "tonalRamp": [
-          "#1c2431",
-          "#2c3d59",
-          "#385685",
-          "#416db4",
-          "#6a8cc3",
-          "#97acce",
-          "#c3cedf",
-          "#eff2f5"
-        ],
-        "note": "Literal #070c14 in source; not a :root custom property."
+          "#0b0b0a",
+          "#262523",
+          "#43423e",
+          "#63615b",
+          "#84827c",
+          "#a7a5a0",
+          "#cac9c6",
+          "#efeeed"
+        ]
+      },
+      "paper-ink": {
+        "role": "neutral",
+        "displayName": "Paper Ink",
+        "canonical": "#17171a",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252526",
+          "#424244",
+          "#616164",
+          "#828285",
+          "#a5a5a7",
+          "#c9c9ca",
+          "#eeeeef"
+        ]
+      },
+      "code": {
+        "role": "neutral",
+        "displayName": "Code Black",
+        "canonical": "#0a0b0d",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252526",
+          "#414243",
+          "#606164",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeeef"
+        ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Product name on the enamel sign only."
+        "purpose": "The single h1 on the board message line."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section headings, balanced wrap."
+        "purpose": "Section h2s."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Directory terms, API sub-heads, footer mark."
+        "purpose": "h3s and timetable terms."
+      },
+      "flap": {
+        "displayName": "Flap Glyph",
+        "purpose": "One character per split-flap tile; names and measured numbers only."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Running text; 16px on phones."
+        "purpose": "Prose and explanations."
       },
       "label": {
-        "displayName": "Sill Label",
-        "purpose": "Uppercase window sill labels only."
+        "displayName": "Board Label",
+        "purpose": "Uppercase tracked column heads, nav, control names, tabs, row plates, field labels."
       },
       "code": {
         "displayName": "Code",
-        "purpose": "Code panels, install line, option names, readouts."
+        "purpose": "Snippets, readouts, option names."
       }
     },
-    "fonts": [
-      {
-        "family": "Big Shoulders Display",
-        "file": "docs/fonts/big-shoulders-display-latin.woff2",
-        "weights": "100 900",
-        "preload": true
-      },
-      {
-        "family": "Atkinson Hyperlegible Next",
-        "file": "docs/fonts/atkinson-hyperlegible-next-latin.woff2",
-        "weights": "200 800"
-      },
-      {
-        "family": "JetBrains Mono",
-        "file": "docs/fonts/jetbrains-mono-latin.woff2",
-        "weights": "100 800"
-      }
-    ],
     "shadows": [
       {
-        "name": "sign-cast",
-        "value": "0 14px 30px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.15)",
-        "purpose": "Enamel sign on the brick."
+        "name": "housing",
+        "value": "inset 0 0 0 1px #24262b, 0 24px 50px -24px rgba(0,0,0,0.9)",
+        "purpose": "Board housing frames."
       },
       {
-        "name": "plaque-cast",
-        "value": "0 10px 22px -10px rgba(0,0,0,0.8)",
-        "purpose": "Door plaque."
+        "name": "tile",
+        "value": "inset 0 0 0 1px rgba(0,0,0,0.65), 0 2px 3px -1px rgba(0,0,0,0.6)",
+        "purpose": "Every split-flap tile."
       },
       {
-        "name": "sill-cast",
-        "value": "0 8px 14px -6px rgba(0,0,0,0.65)",
-        "purpose": "Window sills."
+        "name": "ticket",
+        "value": "0 16px 28px -14px rgba(0,0,0,0.9)",
+        "purpose": "Boarding pass and prompt ticket lifting off the board."
       },
       {
-        "name": "cornice-cast",
-        "value": "0 6px 14px -6px rgba(0,0,0,0.6)",
-        "purpose": "Facade cornice strip."
-      },
-      {
-        "name": "window-reveal",
-        "value": "inset 0 0 0 2px rgba(0,0,0,0.35), 0 0 0 4px var(--brick-deep)",
-        "purpose": "Pane recessed into the brick."
+        "name": "row-frame",
+        "value": "inset 0 0 0 1px rgba(255,255,255,0.05)",
+        "purpose": "Rows at rest; 0.25 alpha hover, 2px yellow boarded, 3px yellow focus."
       }
     ],
     "motion": [
       {
         "name": "ease",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "All UI transitions (copy fill 0.2s, frame color 0.3s, outline button fill 0.2s)."
+        "purpose": "Flap flip and button colour transitions."
       },
       {
-        "name": "ui-stillness",
-        "value": "none",
-        "purpose": "The weather is the motion; UI only lights up the active window. Smooth scroll is disabled under prefers-reduced-motion."
+        "name": "flap-flip",
+        "value": "0.34s, rotateX(88deg) to none with brightness 1.5 to 1, 28ms stagger per tile",
+        "purpose": "The only UI motion; disabled under reduced motion."
+      },
+      {
+        "name": "state-color",
+        "value": "0.2s background/color",
+        "purpose": "Button and copy state colour changes; no movement."
       }
     ],
     "breakpoints": [
       {
+        "name": "remarks-off",
+        "value": "1100px"
+      },
+      {
         "name": "stack",
-        "value": "980px"
+        "value": "900px"
       },
       {
         "name": "phone",
-        "value": "600px"
+        "value": "640px"
       }
-    ],
-    "windowSkies": {
-      "snow": "#13264a",
-      "winter": "#1b3157",
-      "rain": "#1a2533",
-      "thunderstorm": "#141a26",
-      "cherry-blossom": "#2b2140",
-      "autumn": "#2e1c14",
-      "summer": "#3a2a1a",
-      "confetti": "#22172e",
-      "stars": "#070b1c",
-      "fog": "#2a3442"
-    }
+    ]
   },
   "components": [
     {
-      "name": "Roofline Nav",
+      "name": "Split-Flap Tile",
+      "kind": "custom",
+      "refersTo": "flap-tile",
+      "description": "One character per tile; names and measured numbers only. Yellow when selected.",
+      "html": "<div style=\"display:grid;gap:8px\"><span class=\"ds-flaps\"><span class=\"ds-t\">S</span><span class=\"ds-t\">N</span><span class=\"ds-t\">O</span><span class=\"ds-t\">W</span></span><span class=\"ds-flaps ds-sel\"><span class=\"ds-t\">6</span><span class=\"ds-t\">0</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">F</span><span class=\"ds-t\">P</span><span class=\"ds-t\">S</span></span></div>",
+      "css": ".ds-flaps{display:inline-flex;gap:3px;} .ds-t{position:relative;display:inline-grid;place-items:center;width:1.55rem;height:2.2rem;font:700 1.45rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);color:var(--glyph,#f2f0ea);background:linear-gradient(var(--tile-hi,#27292e),var(--tile-lo,#17181b) 50%,#121316 50%,#1a1b1f);border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.65),0 2px 3px -1px rgba(0,0,0,.6);} .ds-t::after{content:\"\";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:rgba(0,0,0,.8);} .ds-sel .ds-t{color:var(--yellow,#f4c430);}"
+    },
+    {
+      "name": "Station Sign Strip",
       "kind": "nav",
-      "refersTo": "roofline-nav",
-      "description": "Full-width night bar: display-face mark left, quiet links right.",
-      "html": "<header class=\"ds-roof\"><a class=\"ds-roof-mark\" href=\"#\">atmosfx</a><nav class=\"ds-roof-nav\"><a href=\"#\">Playground</a><a href=\"#\">For AI agents</a><a href=\"#\">GitHub</a><a href=\"#\">npm</a></nav></header>",
-      "css": ".ds-roof{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.9rem 1.5rem;background:var(--night,#0d1726);font-family:var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-roof-mark{font:800 1.35rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.02em;color:var(--ink,#eef2f8);text-decoration:none;} .ds-roof-nav{display:flex;gap:1.4rem;font-size:0.95rem;} .ds-roof-nav a{color:var(--ink-dim,#b4c1d4);text-decoration:none;} .ds-roof-nav a:hover{color:var(--ink,#eef2f8);} .ds-roof a:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;border-radius:3px;}"
+      "refersTo": "station-sign",
+      "description": "Full-width yellow band: sign-ink mark left, board-capital nav right.",
+      "html": "<header class=\"ds-sign\"><a class=\"ds-mark\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><rect x=\"1\" y=\"3\" width=\"10\" height=\"18\" rx=\"2\" fill=\"#141414\"/><rect x=\"13\" y=\"3\" width=\"10\" height=\"18\" rx=\"2\" fill=\"#141414\"/><path d=\"M1 12h22\" stroke=\"#f4c430\" stroke-width=\"1.4\"/></svg>atmosfx</a><nav class=\"ds-nav\"><a href=\"#\">Playground</a><a href=\"#\">Docs</a><a href=\"#\">GitHub</a></nav></header>",
+      "css": ".ds-sign{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 1.5rem;background:var(--yellow,#f4c430);color:var(--yellow-ink,#141414);} .ds-mark{display:inline-flex;align-items:center;gap:.55rem;font:700 1.5rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);color:inherit;text-decoration:none;} .ds-nav{display:flex;gap:1.4rem;font:700 1.08rem var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.04em;text-transform:uppercase;} .ds-nav a{color:var(--yellow-ink,#141414);text-decoration:none;} .ds-nav a:hover{text-decoration:underline;text-decoration-thickness:2px;} .ds-sign a:focus-visible{outline:2px solid var(--yellow-ink,#141414);outline-offset:3px;border-radius:3px;}"
     },
     {
-      "name": "Enamel Sign on Brick",
-      "kind": "custom",
-      "refersTo": "enamel-sign",
-      "description": "The product name on an enamel plate with brass border, mounted on the brick facade.",
-      "html": "<div class=\"ds-facade\"><div class=\"ds-enamel\"><h1>atmosfx</h1></div></div>",
-      "css": ".ds-facade{padding:2rem;background:radial-gradient(120% 60% at 50% 115%,rgba(255,200,97,0.16),transparent 60%),url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28'%3E%3Cpath d='M0 13.5h56M0 27.5h56M28 0v14M0 14v14M56 14v14' stroke='%234a1d14' stroke-width='1.6' fill='none'/%3E%3C/svg%3E\"),var(--brick,#7a3324);border-top:10px solid var(--brick-deep,#5a2418);} .ds-enamel{display:inline-block;background:var(--enamel,#0f2f52);border:3px solid var(--lamp-deep,#e9a63a);outline:6px solid var(--enamel,#0f2f52);border-radius:10px;padding:0.6rem 1.6rem 0.75rem;box-shadow:0 14px 30px -10px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.15);} .ds-enamel h1{margin:0;font:900 4rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.01em;color:#f6f3ec;}"
+      "name": "Board Row",
+      "kind": "card",
+      "refersTo": "board-row",
+      "description": "Full-width destination row over a live weather canvas; season and remarks on dark plates; boarded state is a yellow inset frame with yellow flaps.",
+      "html": "<div class=\"ds-housing\" style=\"display:grid;gap:4px\"><button class=\"ds-row\" type=\"button\"><span class=\"ds-plate\">Any</span><span class=\"ds-flaps\"><span class=\"ds-t\">S</span><span class=\"ds-t\">N</span><span class=\"ds-t\">O</span><span class=\"ds-t\">W</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">&nbsp;</span></span><span></span><span class=\"ds-flaps ds-dim\"><span class=\"ds-t\">O</span><span class=\"ds-t\">N</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">T</span><span class=\"ds-t\">I</span><span class=\"ds-t\">M</span><span class=\"ds-t\">E</span><span class=\"ds-t\">&nbsp;</span></span></button><button class=\"ds-row ds-on\" type=\"button\" style=\"background:#2e1c14\"><span class=\"ds-plate\">Sep–Nov</span><span class=\"ds-flaps\"><span class=\"ds-t\">A</span><span class=\"ds-t\">U</span><span class=\"ds-t\">T</span><span class=\"ds-t\">U</span><span class=\"ds-t\">M</span><span class=\"ds-t\">N</span><span class=\"ds-t\">&nbsp;</span><span class=\"ds-t\">&nbsp;</span></span><span></span><span class=\"ds-flaps\"><span class=\"ds-t\">B</span><span class=\"ds-t\">O</span><span class=\"ds-t\">A</span><span class=\"ds-t\">R</span><span class=\"ds-t\">D</span><span class=\"ds-t\">I</span><span class=\"ds-t\">N</span><span class=\"ds-t\">G</span></span></button></div>",
+      "css": ".ds-flaps{display:inline-flex;gap:3px;} .ds-t{position:relative;display:inline-grid;place-items:center;width:1.55rem;height:2.2rem;font:700 1.45rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);color:var(--glyph,#f2f0ea);background:linear-gradient(var(--tile-hi,#27292e),var(--tile-lo,#17181b) 50%,#121316 50%,#1a1b1f);border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.65),0 2px 3px -1px rgba(0,0,0,.6);} .ds-t::after{content:\"\";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:rgba(0,0,0,.8);} .ds-housing{background:var(--housing,#0b0c0e);border-radius:8px;padding:1rem;box-shadow:inset 0 0 0 1px #24262b,0 24px 50px -24px rgba(0,0,0,.9);} .ds-row{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:5.5rem auto 1fr auto;align-items:center;column-gap:1rem;min-height:3.5rem;padding:.4rem 1rem;border-radius:3px;background:#13264a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);} .ds-row:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);} .ds-row:focus-visible{box-shadow:inset 0 0 0 3px var(--yellow,#f4c430);} .ds-plate{justify-self:start;background:rgba(11,12,14,.82);border-radius:3px;padding:.4rem .55rem;font:500 1.15rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim,#a9adb5);} .ds-dim .ds-t{color:var(--ink-dim,#a9adb5);} .ds-on{box-shadow:inset 0 0 0 2px var(--yellow,#f4c430);} .ds-on .ds-t,.ds-on .ds-plate{color:var(--yellow,#f4c430);}"
     },
     {
-      "name": "Door Plaque (install + copy)",
+      "name": "Boarding Pass",
+      "kind": "card",
+      "refersTo": "boarding-pass",
+      "description": "Paper ticket holding install and mount lines with fixed-height Copy buttons; yellow stub perforated with housing half-holes names the current effect.",
+      "html": "<div class=\"ds-pass\"><div class=\"ds-pass-main\"><span class=\"ds-label\">Install</span><div class=\"ds-frow\"><code>npm i @vivekkrishna30/atmosfx</code><button class=\"ds-copy\" type=\"button\">Copy</button></div></div><div class=\"ds-stub\"><span>snow</span></div></div>",
+      "css": ".ds-pass{display:grid;grid-template-columns:minmax(0,1fr) 3.4rem;max-width:34rem;color:var(--paper-ink,#17171a);border-radius:6px;box-shadow:0 16px 28px -14px rgba(0,0,0,.9);} .ds-pass-main{background:var(--paper,#efece4);border-radius:6px 0 0 6px;padding:.85rem 1rem .95rem;display:grid;gap:.3rem;} .ds-label{font:700 .85rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.1em;text-transform:uppercase;color:#55544f;} .ds-frow{display:flex;align-items:flex-start;gap:.5rem;min-width:0;} .ds-frow code{flex:1;min-width:0;overflow-wrap:break-word;padding:.55rem .7rem;background:#e2ded3;border-radius:4px;font:.86rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);} .ds-copy{font:700 .9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;border-radius:4px;background:var(--paper-ink,#17171a);color:var(--paper,#efece4);padding:0 .9rem;height:2.35rem;flex:none;transition:background .2s;} .ds-copy:hover{background:#000;} .ds-copy:focus-visible{outline:2px solid var(--yellow,#f4c430);outline-offset:3px;} .ds-stub{background-color:var(--yellow,#f4c430);border-radius:0 6px 6px 0;display:grid;place-items:center;background-image:radial-gradient(circle at 0 50%,var(--housing,#0b0c0e) 4px,transparent 4.5px);background-size:10px 14px;background-repeat:repeat-y;background-position:0 3px;} .ds-stub span{writing-mode:vertical-rl;transform:rotate(180deg);font:700 1.25rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.14em;text-transform:uppercase;color:var(--yellow-ink,#141414);}"
+    },
+    {
+      "name": "Primary Button",
       "kind": "button",
-      "refersTo": "door-plaque",
-      "description": "Primary action: the install command on a brass plate with an amber copy block.",
-      "html": "<div class=\"ds-plaque\"><code>npm i @vivekkrishna30/atmosfx</code><button class=\"ds-copy\" type=\"button\">Copy</button></div>",
-      "css": ".ds-plaque{display:inline-flex;align-items:stretch;background:#1a1208;border:2px solid var(--lamp-deep,#e9a63a);border-radius:8px;overflow:hidden;box-shadow:0 10px 22px -10px rgba(0,0,0,0.8);} .ds-plaque code{padding:0.7rem 0.9rem;color:var(--lamp,#ffc861);font:0.92rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);white-space:nowrap;} .ds-copy{font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);padding:0 1rem;min-width:5.5rem;transition:background 0.2s cubic-bezier(0.16,1,0.3,1);} .ds-copy:hover{background:#ffd885;} .ds-copy:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;} .ds-copy[data-state=\"copied\"]{background:#9be3a8;} .ds-copy[data-state=\"failed\"]{background:#ffb3a3;}"
+      "refersTo": "button-primary",
+      "description": "Yellow fill, sign ink; hover to lamp-hot yellow. No lift.",
+      "html": "<button class=\"ds-btn\" type=\"button\">Let it snow on the board</button>",
+      "css": ".ds-btn{font:700 1rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;border-radius:4px;background:var(--yellow,#f4c430);color:var(--yellow-ink,#141414);padding:.8rem 1.25rem;transition:background .2s cubic-bezier(.16,1,.3,1);} .ds-btn:hover{background:var(--yellow-hi,#ffd659);} .ds-btn:focus-visible{outline:2px solid var(--yellow,#f4c430);outline-offset:3px;}"
     },
     {
-      "name": "Window (unlit and lit)",
-      "kind": "custom",
-      "refersTo": "window-sill",
-      "description": "Effect picker: framed pane with glazing bars over its own sky, stone sill label; aria-pressed lights it amber.",
-      "html": "<div class=\"ds-wall\"><button class=\"ds-window\" type=\"button\" aria-pressed=\"false\"><span class=\"ds-pane\" style=\"--sky:#13264a\"></span><span class=\"ds-sill\">Snow</span></button><button class=\"ds-window\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-pane\" style=\"--sky:#2e1c14\"></span><span class=\"ds-sill\">Autumn</span></button></div>",
-      "css": ".ds-wall{display:grid;grid-template-columns:repeat(2,140px);gap:2rem;padding:1.5rem 2rem;background:var(--brick,#7a3324);} .ds-window{all:unset;cursor:pointer;display:flex;flex-direction:column;} .ds-pane{position:relative;display:block;aspect-ratio:4/4.4;overflow:hidden;border:7px solid #e9e4da;border-bottom-width:9px;border-radius:3px 3px 0 0;background:var(--sky,#10213a);box-shadow:inset 0 0 0 2px rgba(0,0,0,0.35),0 0 0 4px var(--brick-deep,#5a2418);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1);} .ds-pane::after{content:\"\";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent calc(50% - 2px),#e9e4da calc(50% - 2px),#e9e4da calc(50% + 2px),transparent calc(50% + 2px)),linear-gradient(transparent calc(42% - 2px),#e9e4da calc(42% - 2px),#e9e4da calc(42% + 2px),transparent calc(42% + 2px)),linear-gradient(160deg,rgba(255,255,255,0.07),transparent 40%);} .ds-sill{display:block;margin:0 -10px;background:var(--stone,#d8d2c6);color:var(--stone-ink,#2b2520);font:800 1.05rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.06em;text-transform:uppercase;text-align:center;padding:0.5rem 0.4rem 0.45rem;border-radius:2px;box-shadow:0 8px 14px -6px rgba(0,0,0,0.65);} .ds-window:hover .ds-pane{border-color:#fff7e3;} .ds-window[aria-pressed=\"true\"] .ds-pane{border-color:var(--lamp,#ffc861);} .ds-window[aria-pressed=\"true\"] .ds-sill{background:var(--lamp,#ffc861);} .ds-window:focus-visible .ds-pane{outline:3px solid var(--lamp,#ffc861);outline-offset:4px;}"
+      "name": "Copy Button (done)",
+      "kind": "button",
+      "refersTo": "button-copy-done",
+      "description": "Copy confirmation: signal green for 1.8s, then back to rest.",
+      "html": "<button class=\"ds-copy\" type=\"button\">Copy</button> <button class=\"ds-copy ds-done\" type=\"button\">Copied</button>",
+      "css": ".ds-copy{font:700 .9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);border:0;border-radius:4px;background:var(--paper-ink,#17171a);color:var(--paper,#efece4);padding:.6rem .9rem;cursor:pointer;} .ds-copy:hover{background:#000;} .ds-copy:focus-visible{outline:2px solid var(--yellow,#f4c430);outline-offset:3px;} .ds-done{background:var(--green,#3fbf6f);color:#06210f;}"
     },
     {
-      "name": "Code Panel with Tabs",
+      "name": "Detented Fader",
+      "kind": "input",
+      "refersTo": "fader",
+      "description": "Custom range input with per-input --ticks detents, a rectangular yellow fader cap with a centre line, and a mono readout well.",
+      "html": "<div class=\"ds-ctl\"><label for=\"ds-i\">Intensity</label><input id=\"ds-i\" class=\"ds-range\" style=\"--ticks:10\" type=\"range\" min=\"0\" max=\"1\" step=\"0.05\" value=\"0.5\"><output>0.5</output></div>",
+      "css": ".ds-ctl{display:grid;grid-template-columns:6.5rem 1fr 3.4rem;align-items:center;gap:.9rem;color:var(--ink,#f2f0ea);} .ds-ctl label{font:500 1.2rem/1 var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.06em;text-transform:uppercase;} .ds-ctl output{font:.88rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);text-align:right;font-variant-numeric:tabular-nums;background:var(--tile-lo,#17181b);border-radius:3px;padding:.3rem .5rem;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6);} .ds-range{--ticks:10;-webkit-appearance:none;appearance:none;width:100%;height:1.9rem;margin:0;background:transparent;cursor:pointer;} .ds-range::-webkit-slider-runnable-track{height:1.9rem;border-radius:3px;background:linear-gradient(var(--line,#2c2e33),var(--line,#2c2e33)) 0 50%/100% 4px no-repeat,repeating-linear-gradient(90deg,#5a5e66 0 1px,transparent 1px calc(100% / var(--ticks))) 0 0/calc(100% - 1px) .45rem no-repeat,repeating-linear-gradient(90deg,#5a5e66 0 1px,transparent 1px calc(100% / var(--ticks))) 0 100%/calc(100% - 1px) .45rem no-repeat;} .ds-range::-webkit-slider-thumb{-webkit-appearance:none;width:.85rem;height:1.9rem;border-radius:2px;background:linear-gradient(90deg,var(--yellow,#f4c430) 0 calc(50% - 1px),var(--yellow-ink,#141414) calc(50% - 1px) calc(50% + 1px),var(--yellow,#f4c430) calc(50% + 1px));box-shadow:0 2px 4px rgba(0,0,0,.6);} .ds-range::-moz-range-thumb{width:.85rem;height:1.9rem;border:0;border-radius:2px;background:linear-gradient(90deg,var(--yellow,#f4c430) 0 calc(50% - 1px),var(--yellow-ink,#141414) calc(50% - 1px) calc(50% + 1px),var(--yellow,#f4c430) calc(50% + 1px));box-shadow:0 2px 4px rgba(0,0,0,.6);} .ds-range:focus-visible{outline:2px solid var(--yellow,#f4c430);outline-offset:2px;}"
+    },
+    {
+      "name": "Code Panel",
       "kind": "card",
       "refersTo": "code-panel",
-      "description": "Dark code ground, hairline tab row with amber underline on the selected tab and a copy block at the end.",
-      "html": "<div class=\"ds-code\"><div class=\"ds-tabs\"><button type=\"button\" aria-selected=\"true\">npm</button><button type=\"button\" aria-selected=\"false\">Script tag</button><button class=\"ds-tabs-copy\" type=\"button\">Copy</button></div><pre><span class=\"ds-k\">import</span> { Effects } <span class=\"ds-k\">from</span> <span class=\"ds-s\">'@vivekkrishna30/atmosfx'</span>;\n\n<span class=\"ds-k\">const</span> fx = Effects.<span class=\"ds-n\">mount</span>(<span class=\"ds-s\">'page'</span>, <span class=\"ds-s\">'snow'</span>);</pre></div>",
-      "css": ".ds-code{background:#070c14;border:1px solid var(--line,#2a3c57);border-radius:10px;overflow:hidden;} .ds-tabs{display:flex;align-items:center;border-bottom:1px solid var(--line,#2a3c57);} .ds-tabs button:not(.ds-tabs-copy){all:unset;cursor:pointer;padding:0.7rem 1rem;font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);color:var(--ink-dim,#b4c1d4);border-bottom:2px solid transparent;margin-bottom:-1px;} .ds-tabs button[aria-selected=\"true\"]{color:var(--ink,#eef2f8);border-bottom-color:var(--lamp,#ffc861);} .ds-tabs button:not(.ds-tabs-copy):hover{color:var(--ink,#eef2f8);} .ds-tabs button:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:-4px;} .ds-tabs-copy{margin-left:auto;align-self:stretch;font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);padding:0.7rem 1rem;} .ds-tabs-copy:hover{background:#ffd885;} .ds-code pre{margin:0;padding:1.1rem 1.2rem 1.3rem;overflow-x:auto;line-height:1.65;color:#d7e0ee;font:0.86rem/1.65 var(--mono,\"JetBrains Mono\",ui-monospace,monospace);} .ds-k{color:#ff9e7a;} .ds-s{color:var(--lamp,#ffc861);} .ds-n{color:#8fd3ff;}"
+      "description": "Code-black panel with board-capital tabs (yellow underline when selected) and a yellow Copy in the tab bar.",
+      "html": "<div class=\"ds-code\"><div class=\"ds-tabs\"><button class=\"ds-tab\" aria-selected=\"true\" type=\"button\">npm</button><button class=\"ds-tab\" aria-selected=\"false\" type=\"button\">Script tag</button><button class=\"ds-tcopy\" type=\"button\">Copy</button></div><pre><span class=\"ds-k\">import</span> { Effects } <span class=\"ds-k\">from</span> <span class=\"ds-s\">'@vivekkrishna30/atmosfx'</span>;\nEffects.<span class=\"ds-n\">mount</span>(<span class=\"ds-s\">'page'</span>, <span class=\"ds-s\">'snow'</span>);</pre></div>",
+      "css": ".ds-code{background:var(--code,#0a0b0d);border:1px solid var(--line,#2c2e33);border-radius:6px;overflow:hidden;} .ds-tabs{display:flex;border-bottom:1px solid var(--line,#2c2e33);} .ds-tab{all:unset;cursor:pointer;padding:.7rem 1rem;font:500 1.05rem var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim,#a9adb5);border-bottom:2px solid transparent;margin-bottom:-1px;} .ds-tab[aria-selected=\"true\"]{color:var(--ink,#f2f0ea);border-bottom-color:var(--yellow,#f4c430);} .ds-tab:focus-visible{outline:2px solid var(--yellow,#f4c430);outline-offset:-4px;} .ds-tcopy{margin-left:auto;border:0;font:700 .9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);padding:0 .9rem;background:var(--yellow,#f4c430);color:var(--yellow-ink,#141414);cursor:pointer;} .ds-tcopy:hover{background:var(--yellow-hi,#ffd659);} .ds-code pre{margin:0;padding:1.1rem 1.2rem 1.3rem;font:.86rem/1.65 var(--mono,\"JetBrains Mono\",ui-monospace,monospace);color:#dcdfe5;} .ds-k{color:#ff9b85;} .ds-s{color:var(--yellow,#f4c430);} .ds-n{color:#8fd3ff;}"
     },
     {
-      "name": "Outline Button",
-      "kind": "button",
-      "refersTo": "button-outline",
-      "description": "Secondary in-section action; fills with lamp light on hover.",
-      "html": "<button class=\"ds-btn\" type=\"button\">Let it snow on the sills</button>",
-      "css": ".ds-btn{font:700 1rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:2px solid var(--lamp,#ffc861);border-radius:8px;background:transparent;color:var(--lamp,#ffc861);padding:0.7rem 1.2rem;transition:background 0.2s cubic-bezier(0.16,1,0.3,1),color 0.2s cubic-bezier(0.16,1,0.3,1);} .ds-btn:hover{background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);} .ds-btn:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;}"
-    },
-    {
-      "name": "Directory List",
-      "kind": "custom",
-      "refersTo": "",
-      "description": "Definition list of measured facts: display terms with mono captions, hairline rows.",
-      "html": "<dl class=\"ds-dir\"><div><dt>6.0 kB<span>gzipped</span></dt><dd>The core engine plus <strong>one effect</strong> is about 6.6 kB.</dd></div><div><dt>Page or element</dt><dd>Pass an element to keep the weather <strong>inside one box</strong>.</dd></div></dl>",
-      "css": ".ds-dir{margin:0;border-top:2px solid var(--ink,#eef2f8);font-family:var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-dir div{display:grid;grid-template-columns:minmax(8rem,0.32fr) 1fr;gap:1.5rem;align-items:baseline;padding:1rem 0;border-bottom:1px solid var(--line,#2a3c57);} .ds-dir dt{font:800 1.6rem/1.05 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);color:var(--ink,#eef2f8);} .ds-dir dt span{display:block;margin-top:0.3rem;font:400 0.78rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);color:var(--ink-dim,#b4c1d4);} .ds-dir dd{margin:0;color:var(--ink-dim,#b4c1d4);} .ds-dir dd strong{color:var(--ink,#eef2f8);}"
-    },
-    {
-      "name": "Options Table",
-      "kind": "custom",
-      "refersTo": "",
-      "description": "API options: amber mono names, dim descriptions, hairline rows.",
-      "html": "<table class=\"ds-opts\"><tr><td>intensity</td><td>0 to 1, particle count. Default 0.5</td></tr><tr><td>wind</td><td>-1 to 1, sideways push</td></tr><tr><td>ground · settleOn</td><td>Winter's snow bank, and elements to cap</td></tr></table>",
-      "css": ".ds-opts{width:100%;border-collapse:collapse;font:0.93rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-opts td{padding:0.45rem 0;border-bottom:1px solid var(--line,#2a3c57);vertical-align:top;color:var(--ink-dim,#b4c1d4);} .ds-opts td:first-child{font:0.84rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);color:var(--lamp,#ffc861);padding-right:1rem;white-space:nowrap;}"
-    },
-    {
-      "name": "Footer",
-      "kind": "nav",
-      "refersTo": "",
-      "description": "Night ground under a heavy brick band; mark left, license and links right.",
-      "html": "<footer class=\"ds-foot\"><span class=\"ds-foot-mark\">atmosfx</span><span>MIT licensed · by <a href=\"#\">Vivek-Krishna00</a> · <a href=\"#\">npm</a></span></footer>",
-      "css": ".ds-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;padding:2rem 1.5rem 3rem;border-top:8px solid var(--brick-deep,#5a2418);background:var(--night,#0d1726);color:var(--ink-dim,#b4c1d4);font:0.95rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-foot-mark{font:800 1.6rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);color:var(--ink,#eef2f8);} .ds-foot a{color:var(--lamp,#ffc861);text-underline-offset:0.2em;text-decoration-thickness:1px;} .ds-foot a:hover{text-decoration-thickness:2px;}"
+      "name": "Paper Prompt Ticket",
+      "kind": "card",
+      "refersTo": "prompt-ticket",
+      "description": "Agent prompt printed on paper with a dashed tear line and a Copy prompt button.",
+      "html": "<div class=\"ds-note\"><div class=\"ds-ntabs\"><span>Agent prompt</span><button class=\"ds-ncopy\" type=\"button\">Copy prompt</button></div><pre>Add the atmosfx effect library to this website and run the \"snow\" effect over the whole page.</pre></div>",
+      "css": ".ds-note{background:var(--paper,#efece4);color:var(--paper-ink,#17171a);border-radius:6px;overflow:hidden;box-shadow:0 16px 28px -14px rgba(0,0,0,.9);} .ds-ntabs{display:flex;align-items:center;border-bottom:2px dashed #b9b4a6;} .ds-ntabs span{padding:.7rem 1rem;font:700 1.05rem var(--display,\"Barlow Condensed\",\"Arial Narrow\",sans-serif);letter-spacing:.08em;text-transform:uppercase;} .ds-ncopy{margin-left:auto;align-self:stretch;border:0;font:700 .9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);padding:0 .9rem;background:var(--yellow,#f4c430);color:var(--yellow-ink,#141414);cursor:pointer;} .ds-ncopy:hover{background:var(--yellow-hi,#ffd659);} .ds-ncopy:focus-visible{outline:2px solid var(--paper-ink,#17171a);outline-offset:-4px;} .ds-note pre{margin:0;padding:1.1rem 1.2rem 1.3rem;white-space:pre-wrap;font:.82rem/1.65 var(--mono,\"JetBrains Mono\",ui-monospace,monospace);}"
     }
   ],
   "narrative": {
-    "northStar": "The Night Street Facade",
-    "overview": "The page is a brick building on a night street. Its upper storey is the product: a facade of lit windows, each one a real element running a different live weather, labelled on a stone sill. Below the facade the visitor steps down to street level, a dark night-blue ground where the reading happens: tuning, code, the directory of facts, the agent prompt, the API. Every component is a piece of street architecture (roofline, cornice, enamel sign, door plaque, window, sill) rather than a generic card or button.\n\nWarm window light is the only accent. It marks the lit thing (the selected window), the primary action (the copy plaque) and links. Everything else is brick, stone, night and cool white text. The UI itself stays still; the weather is the motion. The only UI change on interaction is a window lighting up.\n\nDensity is medium: a generous facade up top, then single-column reading sections that split into two columns on wide screens.",
+    "northStar": "The Departures Board",
+    "overview": "The whole page is a station board at night. A near-black housing owns the ground; names and measured numbers sit on split-flap tiles; every effect is a destination row, a full-width strip running its own live weather, and boarding one pours that weather over the page. The board is the product demo: nothing on it is a picture of an effect.\n\nDensity is the board's: edge-to-edge rows separated by 4px seams, no card gutters, condensed capitals for anything a board would print. Prose drops out of the board voice into a hyperlegible humanist sans, and code sits on a darker panel or on a printed paper ticket. Colour is almost entirely absent; one station yellow carries every \"this is the one\" signal, and one signal green says something is live.\n\nMotion belongs to the weather. The interface itself moves only as a flap flip when the board's text changes, and both stop under reduced motion.",
     "keyCharacteristics": [
-      "Brick facade with drawn mortar courses and a warm street-lamp glow rising from below.",
-      "Ten windows with painted frames, glazing bars drawn over the weather, and stone sills carrying condensed uppercase labels.",
-      "Lamp amber reserved for lit / active / primary.",
-      "Condensed street-signage display face, hyperlegible humanist body, mono only for code.",
-      "Depth comes from physical objects casting soft drop shadows onto brick, never from floating cards."
+      "Black board housing, split-flap tiles, condensed board capitals.",
+      "Full-width live-weather rows, not thumbnails.",
+      "One station yellow for selection, primary action, links, focus and the sign strip.",
+      "Paper tickets (boarding pass, agent prompt) for the things you take away.",
+      "Weather is the motion; the UI only flips."
     ],
     "rules": [
       {
-        "name": "The Lamp Light Rule",
-        "body": "Amber means lit, selected or primary. A window gets the amber frame and sill only when it is the active weather; nothing decorative is amber.",
+        "name": "The Station Yellow Rule",
+        "body": "Yellow means selected, primary, link, focus or the station sign. It never decorates; if an element is yellow, it is the chosen one or the one to press.",
         "section": "colors"
       },
       {
-        "name": "The Window Sky Rule",
-        "body": "Each window pane carries its own dark sky tint (set per effect through the `--sky` custom property, e.g. snow #13264a, autumn #2e1c14, stars #070b1c) so the weather inside reads; panes are never light.",
+        "name": "The Signal Green Rule",
+        "body": "Green reports status (live, copied). It is never a brand colour, a button fill at rest, or a highlight.",
         "section": "colors"
       },
       {
-        "name": "The Signage Rule",
-        "body": "The display face is for signs and headings; it never sets paragraphs. Uppercase is used only on sills.",
+        "name": "The Sky Tint Rule",
+        "body": "Each row's ground is a dark per-effect sky tint set inline (navy, slate, plum, rust; fog is #151c27) under its running weather; these tints live with the effect data, not in the palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flap Content Rule",
+        "body": "Flap tiles carry names and measured numbers only: the DEPARTURES header, the clock, effect names, row status, the boarding effect, timetable figures (6.7 KB, 60 FPS) and live FPS / particle / quality readouts. Sentences never go on flaps.",
         "section": "typography"
       },
       {
-        "name": "The Mono Means Code Rule",
-        "body": "Mono appears only for code, option names, measured numbers and readouts.",
+        "name": "The Board Capitals Rule",
+        "body": "Anything the board itself prints is condensed, uppercase and tracked; anything that explains is sentence-case Atkinson.",
         "section": "typography"
       },
       {
-        "name": "The Fixed To The Wall Rule",
-        "body": "Only objects mounted on the facade cast shadows, and always downward. Street-level panels stay flat with hairline borders.",
+        "name": "The Inset State Rule",
+        "body": "Row state is shown by an inset frame and flap colour, never by lifting, scaling or moving the row.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do build new surfaces from street architecture: signs, plaques, windows, sills, brick bands.",
-      "Do keep amber (lamp) for the lit/selected state, the primary action, links and focus.",
-      "Do give every live effect container its own dark sky tint and draw any glazing or framing above the weather.",
-      "Do cast shadows only from objects mounted on the facade, always downward and soft.",
-      "Do set code, option names and measured numbers in JetBrains Mono with tabular numerals where values change.",
-      "Do keep the UI still; the weather is the motion, and reduced motion must be honored."
+      "**Do** put effect names and measured numbers on flap tiles, padded to a fixed width.",
+      "**Do** keep station yellow for selected, primary, links, focus and the sign strip.",
+      "**Do** use green only to report status (live, copied).",
+      "**Do** run real weather in every row and strip; the row ground is its sky tint.",
+      "**Do** separate board rows with 4px seams and show state with inset frames.",
+      "**Do** put anything you take away (install, code, prompt) on a paper ticket or code panel with a Copy button.",
+      "**Do** stop flap flips and smooth scrolling under prefers-reduced-motion."
     ],
     "donts": [
-      "Don't use amber decoratively or on more than one window at a time.",
-      "Don't set paragraphs in Big Shoulders Display or uppercase anything but sill labels.",
-      "Don't float generic cards with shadows at street level; use hairline borders on the code ground.",
-      "Don't put light backgrounds inside panes; the effects need a dark sky to read.",
-      "Don't invent stats, testimonials or download counts on any surface; the directory carries only measured numbers."
+      "**Don't** add UI motion besides the flap flip; weather is the motion.",
+      "**Don't** set sentences or marketing copy on flaps.",
+      "**Don't** use yellow or green as decoration or background fill outside their roles.",
+      "**Don't** shrink effects into thumbnail tiles or put card gutters between rows.",
+      "**Don't** lift, scale or translate rows or buttons on hover."
     ]
   }
 }
