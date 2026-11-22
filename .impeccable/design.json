@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-22T07:06:23+00:00",
+  "title": "Design System: atmosfx",
+  "extensions": {
+    "colorMeta": {
+      "lamp": {
+        "role": "primary",
+        "displayName": "Street Lamp Amber",
+        "canonical": "#ffc861",
+        "tonalRamp": [
+          "#3c2d10",
+          "#725113",
+          "#ae770f",
+          "#f29f03",
+          "#f4b339",
+          "#edc478",
+          "#eddab5",
+          "#f8f4ec"
+        ]
+      },
+      "lamp-deep": {
+        "role": "primary",
+        "displayName": "Lamp Brass",
+        "canonical": "#e9a63a",
+        "tonalRamp": [
+          "#382a15",
+          "#684b1d",
+          "#9e6d1f",
+          "#da911b",
+          "#e1a84c",
+          "#e1bd84",
+          "#e8d6bb",
+          "#f7f3ee"
+        ]
+      },
+      "lamp-ink": {
+        "role": "primary",
+        "displayName": "Lamp Soot",
+        "canonical": "#241503",
+        "tonalRamp": [
+          "#392813",
+          "#6a461a",
+          "#a2641b",
+          "#df8415",
+          "#e59e48",
+          "#e4b781",
+          "#e9d3b9",
+          "#f7f3ed"
+        ]
+      },
+      "brick": {
+        "role": "secondary",
+        "displayName": "Facade Brick",
+        "canonical": "#7a3324",
+        "tonalRamp": [
+          "#321e1a",
+          "#5c3229",
+          "#8a4233",
+          "#bb5039",
+          "#c97564",
+          "#d29e93",
+          "#e0c7c2",
+          "#f5f0ef"
+        ]
+      },
+      "brick-deep": {
+        "role": "secondary",
+        "displayName": "Shadowed Brick",
+        "canonical": "#5a2418",
+        "tonalRamp": [
+          "#331e19",
+          "#5e3127",
+          "#8c4130",
+          "#c04e35",
+          "#cc7460",
+          "#d49d91",
+          "#e1c7c1",
+          "#f6f0ef"
+        ]
+      },
+      "mortar": {
+        "role": "secondary",
+        "displayName": "Mortar",
+        "canonical": "#4a1d14",
+        "tonalRamp": [
+          "#331e1a",
+          "#5d3027",
+          "#8c4031",
+          "#bf4d36",
+          "#cc7361",
+          "#d49c91",
+          "#e1c6c1",
+          "#f6f0ef"
+        ],
+        "note": "Used as a literal inside the facade's mortar SVG data URI."
+      },
+      "enamel": {
+        "role": "tertiary",
+        "displayName": "Enamel Blue",
+        "canonical": "#0f2f52",
+        "tonalRamp": [
+          "#172636",
+          "#224163",
+          "#275c95",
+          "#2877cd",
+          "#5694d7",
+          "#8ab1db",
+          "#bed0e5",
+          "#eef2f6"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night",
+        "canonical": "#0d1726",
+        "tonalRamp": [
+          "#1b2431",
+          "#2b3e59",
+          "#375785",
+          "#406fb5",
+          "#698dc4",
+          "#96adcf",
+          "#c3cedf",
+          "#eff2f5"
+        ]
+      },
+      "street": {
+        "role": "neutral",
+        "displayName": "Street",
+        "canonical": "#0a111c",
+        "tonalRamp": [
+          "#1c2431",
+          "#2c3d59",
+          "#395684",
+          "#426eb3",
+          "#6a8dc3",
+          "#97acce",
+          "#c4cede",
+          "#eff2f5"
+        ]
+      },
+      "stone": {
+        "role": "neutral",
+        "displayName": "Sill Stone",
+        "canonical": "#d8d2c6",
+        "tonalRamp": [
+          "#2a2822",
+          "#4b4539",
+          "#6d634f",
+          "#918264",
+          "#a89c85",
+          "#bdb6a8",
+          "#d6d3cc",
+          "#f3f3f1"
+        ]
+      },
+      "stone-ink": {
+        "role": "neutral",
+        "displayName": "Stone Ink",
+        "canonical": "#2b2520",
+        "tonalRamp": [
+          "#2a2623",
+          "#49423b",
+          "#6a5d53",
+          "#8c7969",
+          "#a49589",
+          "#bbb2aa",
+          "#d5d1cd",
+          "#f3f2f1"
+        ]
+      },
+      "frame": {
+        "role": "neutral",
+        "displayName": "Frame Paint",
+        "canonical": "#e9e4da",
+        "tonalRamp": [
+          "#2c2821",
+          "#4e4636",
+          "#73654a",
+          "#99855c",
+          "#ae9e7f",
+          "#c1b7a4",
+          "#d8d3ca",
+          "#f4f3f1"
+        ],
+        "note": "Literal #e9e4da in source (frame border and glazing bars); not a :root custom property."
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Moonlit Ink",
+        "canonical": "#eef2f8",
+        "tonalRamp": [
+          "#1d242f",
+          "#2f3e56",
+          "#3d5880",
+          "#4970ac",
+          "#708fbd",
+          "#9aaecb",
+          "#c5cfdd",
+          "#f0f2f5"
+        ]
+      },
+      "ink-dim": {
+        "role": "neutral",
+        "displayName": "Dusk Ink",
+        "canonical": "#b4c1d4",
+        "tonalRamp": [
+          "#20252c",
+          "#35404f",
+          "#495a74",
+          "#5a749b",
+          "#7d92b0",
+          "#a3b0c2",
+          "#c9d0d9",
+          "#f1f2f4"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Gutter Line",
+        "canonical": "#2a3c57",
+        "tonalRamp": [
+          "#1f252e",
+          "#323f53",
+          "#43597a",
+          "#5172a4",
+          "#7690b7",
+          "#9eaec7",
+          "#c7cfdb",
+          "#f0f2f4"
+        ]
+      },
+      "code-ground": {
+        "role": "neutral",
+        "displayName": "Code Ground",
+        "canonical": "#070c14",
+        "tonalRamp": [
+          "#1c2431",
+          "#2c3d59",
+          "#385685",
+          "#416db4",
+          "#6a8cc3",
+          "#97acce",
+          "#c3cedf",
+          "#eff2f5"
+        ],
+        "note": "Literal #070c14 in source; not a :root custom property."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Product name on the enamel sign only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, balanced wrap."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Directory terms, API sub-heads, footer mark."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text; 16px on phones."
+      },
+      "label": {
+        "displayName": "Sill Label",
+        "purpose": "Uppercase window sill labels only."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code panels, install line, option names, readouts."
+      }
+    },
+    "fonts": [
+      {
+        "family": "Big Shoulders Display",
+        "file": "docs/fonts/big-shoulders-display-latin.woff2",
+        "weights": "100 900",
+        "preload": true
+      },
+      {
+        "family": "Atkinson Hyperlegible Next",
+        "file": "docs/fonts/atkinson-hyperlegible-next-latin.woff2",
+        "weights": "200 800"
+      },
+      {
+        "family": "JetBrains Mono",
+        "file": "docs/fonts/jetbrains-mono-latin.woff2",
+        "weights": "100 800"
+      }
+    ],
+    "shadows": [
+      {
+        "name": "sign-cast",
+        "value": "0 14px 30px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.15)",
+        "purpose": "Enamel sign on the brick."
+      },
+      {
+        "name": "plaque-cast",
+        "value": "0 10px 22px -10px rgba(0,0,0,0.8)",
+        "purpose": "Door plaque."
+      },
+      {
+        "name": "sill-cast",
+        "value": "0 8px 14px -6px rgba(0,0,0,0.65)",
+        "purpose": "Window sills."
+      },
+      {
+        "name": "cornice-cast",
+        "value": "0 6px 14px -6px rgba(0,0,0,0.6)",
+        "purpose": "Facade cornice strip."
+      },
+      {
+        "name": "window-reveal",
+        "value": "inset 0 0 0 2px rgba(0,0,0,0.35), 0 0 0 4px var(--brick-deep)",
+        "purpose": "Pane recessed into the brick."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All UI transitions (copy fill 0.2s, frame color 0.3s, outline button fill 0.2s)."
+      },
+      {
+        "name": "ui-stillness",
+        "value": "none",
+        "purpose": "The weather is the motion; UI only lights up the active window. Smooth scroll is disabled under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "980px"
+      },
+      {
+        "name": "phone",
+        "value": "600px"
+      }
+    ],
+    "windowSkies": {
+      "snow": "#13264a",
+      "winter": "#1b3157",
+      "rain": "#1a2533",
+      "thunderstorm": "#141a26",
+      "cherry-blossom": "#2b2140",
+      "autumn": "#2e1c14",
+      "summer": "#3a2a1a",
+      "confetti": "#22172e",
+      "stars": "#070b1c",
+      "fog": "#2a3442"
+    }
+  },
+  "components": [
+    {
+      "name": "Roofline Nav",
+      "kind": "nav",
+      "refersTo": "roofline-nav",
+      "description": "Full-width night bar: display-face mark left, quiet links right.",
+      "html": "<header class=\"ds-roof\"><a class=\"ds-roof-mark\" href=\"#\">atmosfx</a><nav class=\"ds-roof-nav\"><a href=\"#\">Playground</a><a href=\"#\">For AI agents</a><a href=\"#\">GitHub</a><a href=\"#\">npm</a></nav></header>",
+      "css": ".ds-roof{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.9rem 1.5rem;background:var(--night,#0d1726);font-family:var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-roof-mark{font:800 1.35rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.02em;color:var(--ink,#eef2f8);text-decoration:none;} .ds-roof-nav{display:flex;gap:1.4rem;font-size:0.95rem;} .ds-roof-nav a{color:var(--ink-dim,#b4c1d4);text-decoration:none;} .ds-roof-nav a:hover{color:var(--ink,#eef2f8);} .ds-roof a:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;border-radius:3px;}"
+    },
+    {
+      "name": "Enamel Sign on Brick",
+      "kind": "custom",
+      "refersTo": "enamel-sign",
+      "description": "The product name on an enamel plate with brass border, mounted on the brick facade.",
+      "html": "<div class=\"ds-facade\"><div class=\"ds-enamel\"><h1>atmosfx</h1></div></div>",
+      "css": ".ds-facade{padding:2rem;background:radial-gradient(120% 60% at 50% 115%,rgba(255,200,97,0.16),transparent 60%),url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28'%3E%3Cpath d='M0 13.5h56M0 27.5h56M28 0v14M0 14v14M56 14v14' stroke='%234a1d14' stroke-width='1.6' fill='none'/%3E%3C/svg%3E\"),var(--brick,#7a3324);border-top:10px solid var(--brick-deep,#5a2418);} .ds-enamel{display:inline-block;background:var(--enamel,#0f2f52);border:3px solid var(--lamp-deep,#e9a63a);outline:6px solid var(--enamel,#0f2f52);border-radius:10px;padding:0.6rem 1.6rem 0.75rem;box-shadow:0 14px 30px -10px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.15);} .ds-enamel h1{margin:0;font:900 4rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.01em;color:#f6f3ec;}"
+    },
+    {
+      "name": "Door Plaque (install + copy)",
+      "kind": "button",
+      "refersTo": "door-plaque",
+      "description": "Primary action: the install command on a brass plate with an amber copy block.",
+      "html": "<div class=\"ds-plaque\"><code>npm i @vivekkrishna30/atmosfx</code><button class=\"ds-copy\" type=\"button\">Copy</button></div>",
+      "css": ".ds-plaque{display:inline-flex;align-items:stretch;background:#1a1208;border:2px solid var(--lamp-deep,#e9a63a);border-radius:8px;overflow:hidden;box-shadow:0 10px 22px -10px rgba(0,0,0,0.8);} .ds-plaque code{padding:0.7rem 0.9rem;color:var(--lamp,#ffc861);font:0.92rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);white-space:nowrap;} .ds-copy{font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);padding:0 1rem;min-width:5.5rem;transition:background 0.2s cubic-bezier(0.16,1,0.3,1);} .ds-copy:hover{background:#ffd885;} .ds-copy:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;} .ds-copy[data-state=\"copied\"]{background:#9be3a8;} .ds-copy[data-state=\"failed\"]{background:#ffb3a3;}"
+    },
+    {
+      "name": "Window (unlit and lit)",
+      "kind": "custom",
+      "refersTo": "window-sill",
+      "description": "Effect picker: framed pane with glazing bars over its own sky, stone sill label; aria-pressed lights it amber.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-window\" type=\"button\" aria-pressed=\"false\"><span class=\"ds-pane\" style=\"--sky:#13264a\"></span><span class=\"ds-sill\">Snow</span></button><button class=\"ds-window\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-pane\" style=\"--sky:#2e1c14\"></span><span class=\"ds-sill\">Autumn</span></button></div>",
+      "css": ".ds-wall{display:grid;grid-template-columns:repeat(2,140px);gap:2rem;padding:1.5rem 2rem;background:var(--brick,#7a3324);} .ds-window{all:unset;cursor:pointer;display:flex;flex-direction:column;} .ds-pane{position:relative;display:block;aspect-ratio:4/4.4;overflow:hidden;border:7px solid #e9e4da;border-bottom-width:9px;border-radius:3px 3px 0 0;background:var(--sky,#10213a);box-shadow:inset 0 0 0 2px rgba(0,0,0,0.35),0 0 0 4px var(--brick-deep,#5a2418);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1);} .ds-pane::after{content:\"\";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent calc(50% - 2px),#e9e4da calc(50% - 2px),#e9e4da calc(50% + 2px),transparent calc(50% + 2px)),linear-gradient(transparent calc(42% - 2px),#e9e4da calc(42% - 2px),#e9e4da calc(42% + 2px),transparent calc(42% + 2px)),linear-gradient(160deg,rgba(255,255,255,0.07),transparent 40%);} .ds-sill{display:block;margin:0 -10px;background:var(--stone,#d8d2c6);color:var(--stone-ink,#2b2520);font:800 1.05rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);letter-spacing:0.06em;text-transform:uppercase;text-align:center;padding:0.5rem 0.4rem 0.45rem;border-radius:2px;box-shadow:0 8px 14px -6px rgba(0,0,0,0.65);} .ds-window:hover .ds-pane{border-color:#fff7e3;} .ds-window[aria-pressed=\"true\"] .ds-pane{border-color:var(--lamp,#ffc861);} .ds-window[aria-pressed=\"true\"] .ds-sill{background:var(--lamp,#ffc861);} .ds-window:focus-visible .ds-pane{outline:3px solid var(--lamp,#ffc861);outline-offset:4px;}"
+    },
+    {
+      "name": "Code Panel with Tabs",
+      "kind": "card",
+      "refersTo": "code-panel",
+      "description": "Dark code ground, hairline tab row with amber underline on the selected tab and a copy block at the end.",
+      "html": "<div class=\"ds-code\"><div class=\"ds-tabs\"><button type=\"button\" aria-selected=\"true\">npm</button><button type=\"button\" aria-selected=\"false\">Script tag</button><button class=\"ds-tabs-copy\" type=\"button\">Copy</button></div><pre><span class=\"ds-k\">import</span> { Effects } <span class=\"ds-k\">from</span> <span class=\"ds-s\">'@vivekkrishna30/atmosfx'</span>;\n\n<span class=\"ds-k\">const</span> fx = Effects.<span class=\"ds-n\">mount</span>(<span class=\"ds-s\">'page'</span>, <span class=\"ds-s\">'snow'</span>);</pre></div>",
+      "css": ".ds-code{background:#070c14;border:1px solid var(--line,#2a3c57);border-radius:10px;overflow:hidden;} .ds-tabs{display:flex;align-items:center;border-bottom:1px solid var(--line,#2a3c57);} .ds-tabs button:not(.ds-tabs-copy){all:unset;cursor:pointer;padding:0.7rem 1rem;font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);color:var(--ink-dim,#b4c1d4);border-bottom:2px solid transparent;margin-bottom:-1px;} .ds-tabs button[aria-selected=\"true\"]{color:var(--ink,#eef2f8);border-bottom-color:var(--lamp,#ffc861);} .ds-tabs button:not(.ds-tabs-copy):hover{color:var(--ink,#eef2f8);} .ds-tabs button:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:-4px;} .ds-tabs-copy{margin-left:auto;align-self:stretch;font:700 0.9rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:0;background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);padding:0.7rem 1rem;} .ds-tabs-copy:hover{background:#ffd885;} .ds-code pre{margin:0;padding:1.1rem 1.2rem 1.3rem;overflow-x:auto;line-height:1.65;color:#d7e0ee;font:0.86rem/1.65 var(--mono,\"JetBrains Mono\",ui-monospace,monospace);} .ds-k{color:#ff9e7a;} .ds-s{color:var(--lamp,#ffc861);} .ds-n{color:#8fd3ff;}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary in-section action; fills with lamp light on hover.",
+      "html": "<button class=\"ds-btn\" type=\"button\">Let it snow on the sills</button>",
+      "css": ".ds-btn{font:700 1rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);cursor:pointer;border:2px solid var(--lamp,#ffc861);border-radius:8px;background:transparent;color:var(--lamp,#ffc861);padding:0.7rem 1.2rem;transition:background 0.2s cubic-bezier(0.16,1,0.3,1),color 0.2s cubic-bezier(0.16,1,0.3,1);} .ds-btn:hover{background:var(--lamp,#ffc861);color:var(--lamp-ink,#241503);} .ds-btn:focus-visible{outline:2px solid var(--lamp,#ffc861);outline-offset:3px;}"
+    },
+    {
+      "name": "Directory List",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Definition list of measured facts: display terms with mono captions, hairline rows.",
+      "html": "<dl class=\"ds-dir\"><div><dt>6.0 kB<span>gzipped</span></dt><dd>The core engine plus <strong>one effect</strong> is about 6.6 kB.</dd></div><div><dt>Page or element</dt><dd>Pass an element to keep the weather <strong>inside one box</strong>.</dd></div></dl>",
+      "css": ".ds-dir{margin:0;border-top:2px solid var(--ink,#eef2f8);font-family:var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-dir div{display:grid;grid-template-columns:minmax(8rem,0.32fr) 1fr;gap:1.5rem;align-items:baseline;padding:1rem 0;border-bottom:1px solid var(--line,#2a3c57);} .ds-dir dt{font:800 1.6rem/1.05 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);color:var(--ink,#eef2f8);} .ds-dir dt span{display:block;margin-top:0.3rem;font:400 0.78rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);color:var(--ink-dim,#b4c1d4);} .ds-dir dd{margin:0;color:var(--ink-dim,#b4c1d4);} .ds-dir dd strong{color:var(--ink,#eef2f8);}"
+    },
+    {
+      "name": "Options Table",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "API options: amber mono names, dim descriptions, hairline rows.",
+      "html": "<table class=\"ds-opts\"><tr><td>intensity</td><td>0 to 1, particle count. Default 0.5</td></tr><tr><td>wind</td><td>-1 to 1, sideways push</td></tr><tr><td>ground · settleOn</td><td>Winter's snow bank, and elements to cap</td></tr></table>",
+      "css": ".ds-opts{width:100%;border-collapse:collapse;font:0.93rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-opts td{padding:0.45rem 0;border-bottom:1px solid var(--line,#2a3c57);vertical-align:top;color:var(--ink-dim,#b4c1d4);} .ds-opts td:first-child{font:0.84rem var(--mono,\"JetBrains Mono\",ui-monospace,monospace);color:var(--lamp,#ffc861);padding-right:1rem;white-space:nowrap;}"
+    },
+    {
+      "name": "Footer",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Night ground under a heavy brick band; mark left, license and links right.",
+      "html": "<footer class=\"ds-foot\"><span class=\"ds-foot-mark\">atmosfx</span><span>MIT licensed · by <a href=\"#\">Vivek-Krishna00</a> · <a href=\"#\">npm</a></span></footer>",
+      "css": ".ds-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;padding:2rem 1.5rem 3rem;border-top:8px solid var(--brick-deep,#5a2418);background:var(--night,#0d1726);color:var(--ink-dim,#b4c1d4);font:0.95rem var(--body,\"Atkinson Hyperlegible Next\",system-ui,sans-serif);} .ds-foot-mark{font:800 1.6rem/1 var(--display,\"Big Shoulders Display\",\"Arial Narrow\",sans-serif);color:var(--ink,#eef2f8);} .ds-foot a{color:var(--lamp,#ffc861);text-underline-offset:0.2em;text-decoration-thickness:1px;} .ds-foot a:hover{text-decoration-thickness:2px;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Street Facade",
+    "overview": "The page is a brick building on a night street. Its upper storey is the product: a facade of lit windows, each one a real element running a different live weather, labelled on a stone sill. Below the facade the visitor steps down to street level, a dark night-blue ground where the reading happens: tuning, code, the directory of facts, the agent prompt, the API. Every component is a piece of street architecture (roofline, cornice, enamel sign, door plaque, window, sill) rather than a generic card or button.\n\nWarm window light is the only accent. It marks the lit thing (the selected window), the primary action (the copy plaque) and links. Everything else is brick, stone, night and cool white text. The UI itself stays still; the weather is the motion. The only UI change on interaction is a window lighting up.\n\nDensity is medium: a generous facade up top, then single-column reading sections that split into two columns on wide screens.",
+    "keyCharacteristics": [
+      "Brick facade with drawn mortar courses and a warm street-lamp glow rising from below.",
+      "Ten windows with painted frames, glazing bars drawn over the weather, and stone sills carrying condensed uppercase labels.",
+      "Lamp amber reserved for lit / active / primary.",
+      "Condensed street-signage display face, hyperlegible humanist body, mono only for code.",
+      "Depth comes from physical objects casting soft drop shadows onto brick, never from floating cards."
+    ],
+    "rules": [
+      {
+        "name": "The Lamp Light Rule",
+        "body": "Amber means lit, selected or primary. A window gets the amber frame and sill only when it is the active weather; nothing decorative is amber.",
+        "section": "colors"
+      },
+      {
+        "name": "The Window Sky Rule",
+        "body": "Each window pane carries its own dark sky tint (set per effect through the `--sky` custom property, e.g. snow #13264a, autumn #2e1c14, stars #070b1c) so the weather inside reads; panes are never light.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signage Rule",
+        "body": "The display face is for signs and headings; it never sets paragraphs. Uppercase is used only on sills.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Means Code Rule",
+        "body": "Mono appears only for code, option names, measured numbers and readouts.",
+        "section": "typography"
+      },
+      {
+        "name": "The Fixed To The Wall Rule",
+        "body": "Only objects mounted on the facade cast shadows, and always downward. Street-level panels stay flat with hairline borders.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do build new surfaces from street architecture: signs, plaques, windows, sills, brick bands.",
+      "Do keep amber (lamp) for the lit/selected state, the primary action, links and focus.",
+      "Do give every live effect container its own dark sky tint and draw any glazing or framing above the weather.",
+      "Do cast shadows only from objects mounted on the facade, always downward and soft.",
+      "Do set code, option names and measured numbers in JetBrains Mono with tabular numerals where values change.",
+      "Do keep the UI still; the weather is the motion, and reduced motion must be honored."
+    ],
+    "donts": [
+      "Don't use amber decoratively or on more than one window at a time.",
+      "Don't set paragraphs in Big Shoulders Display or uppercase anything but sill labels.",
+      "Don't float generic cards with shadows at street level; use hairline borders on the code ground.",
+      "Don't put light backgrounds inside panes; the effects need a dark sky to read.",
+      "Don't invent stats, testimonials or download counts on any surface; the directory carries only measured numbers."
+    ]
+  }
+}

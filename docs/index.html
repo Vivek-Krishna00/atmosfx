@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>atmosfx · weather for any element</title>
+<meta name="description" content="Snow, rain, cherry blossom, autumn leaves, confetti and more, over the whole page or inside one element. Zero dependencies, about 6 kB gzipped." />
+<meta name="theme-color" content="#0d1726" />
+<meta property="og:title" content="atmosfx · weather for any element" />
+<meta property="og:description" content="Tiny canvas effects for a whole page or a single element. Zero dependencies, built to run on a potato." />
+<link rel="preload" href="fonts/big-shoulders-display-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d1726'/%3E%3Crect x='7' y='6' width='18' height='20' rx='1' fill='%23ffc861'/%3E%3Cpath d='M16 6v20M7 16h18' stroke='%237a3324' stroke-width='2'/%3E%3C/svg%3E" />
+<style>
+@font-face { font-family: "Big Shoulders Display"; font-weight: 100 900; font-display: swap; src: url("fonts/big-shoulders-display-latin.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 200 800; font-display: swap; src: url("fonts/atkinson-hyperlegible-next-latin.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono-latin.woff2") format("woff2"); }
+
+:root {
+  --night: #0d1726;
+  --street: #0a111c;
+  --brick: #7a3324;
+  --brick-deep: #5a2418;
+  --mortar: #4a1d14;
+  --lamp: #ffc861;
+  --lamp-deep: #e9a63a;
+  --lamp-ink: #241503;
+  --stone: #d8d2c6;
+  --stone-ink: #2b2520;
+  --ink: #eef2f8;
+  --ink-dim: #b4c1d4;
+  --enamel: #0f2f52;
+  --line: #2a3c57;
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --body: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scrollbar-color: var(--line) var(--street); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--street);
+  color: var(--ink);
+  font: 17px/1.6 var(--body);
+  caret-color: var(--lamp);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--lamp); color: var(--lamp-ink); }
+a { color: var(--lamp); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--lamp); outline-offset: 3px; border-radius: 3px; }
+code, pre, kbd { font-family: var(--mono); font-size: 0.86em; }
+h1, h2, h3 { font-family: var(--display); font-weight: 800; line-height: 1; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+/* ---------- roofline nav ---------- */
+.roof {
+  position: relative; z-index: 6;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.9rem clamp(1rem, 4vw, 3rem);
+  background: var(--night);
+}
+.roof .mark { font: 800 1.35rem/1 var(--display); letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+.roof nav { display: flex; gap: clamp(0.9rem, 2.5vw, 1.8rem); font-size: 0.95rem; }
+.roof nav a { color: var(--ink-dim); text-decoration: none; }
+.roof nav a:hover { color: var(--ink); }
+
+/* ---------- the facade ---------- */
+.facade {
+  position: relative;
+  background:
+    radial-gradient(120% 60% at 50% 115%, rgba(255, 200, 97, 0.16), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28'%3E%3Cpath d='M0 13.5h56M0 27.5h56M28 0v14M0 14v14M56 14v14' stroke='%234a1d14' stroke-width='1.6' fill='none'/%3E%3C/svg%3E"),
+    var(--brick);
+  padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+  border-top: 10px solid var(--brick-deep);
+}
+.facade::before { /* cornice */
+  content: ""; display: block; height: 18px; margin: 0 calc(-1 * clamp(1rem, 4vw, 3rem));
+  background: linear-gradient(#a2523e, #6b2b1e); box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.6);
+}
+.sign-band {
+  max-width: 1240px; margin: 0 auto;
+  display: grid; grid-template-columns: auto 1fr; align-items: center; gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding: clamp(1.75rem, 4vw, 2.75rem) 0 clamp(1.5rem, 3vw, 2.25rem);
+}
+.enamel {
+  background: var(--enamel);
+  border: 3px solid var(--lamp-deep);
+  outline: 6px solid var(--enamel);
+  border-radius: 10px;
+  padding: 0.6rem 1.6rem 0.75rem;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.enamel h1 { font-size: clamp(3.6rem, 9vw, 6rem); font-weight: 900; letter-spacing: 0.01em; color: #f6f3ec; }
+.hook { max-width: 40rem; }
+.hook .lede { font: 800 clamp(1.9rem, 3.6vw, 2.9rem)/1.02 var(--display); letter-spacing: 0; }
+.hook .sub { margin-top: 0.65rem; color: #f3e6e0; font-size: 1.05rem; max-width: 34rem; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 1.25rem; }
+.plaque {
+  display: inline-flex; align-items: stretch;
+  background: #1a1208; border: 2px solid var(--lamp-deep); border-radius: 8px; overflow: hidden;
+  box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.8);
+}
+.plaque code { padding: 0.7rem 0.9rem; color: var(--lamp); font-size: 0.92rem; white-space: nowrap; overflow-x: auto; }
+.copy {
+  font: 700 0.9rem var(--body); cursor: pointer; border: 0;
+  background: var(--lamp); color: var(--lamp-ink); padding: 0 1rem; min-width: 5.5rem;
+  transition: background 0.2s var(--ease);
+}
+.copy:hover { background: #ffd885; }
+.copy[data-state="copied"] { background: #9be3a8; }
+.copy[data-state="failed"] { background: #ffb3a3; }
+.actions .alt { color: #ffe2a8; font-weight: 700; }
+
+.windows {
+  max-width: 1240px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(1rem, 2.4vw, 2.25rem) clamp(0.9rem, 2.2vw, 2rem);
+}
+.window {
+  all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: stretch;
+  position: relative; -webkit-tap-highlight-color: transparent;
+}
+.pane {
+  position: relative; display: block; aspect-ratio: 4 / 4.4; overflow: hidden;
+  border: 7px solid #e9e4da; border-bottom-width: 9px; border-radius: 3px 3px 0 0;
+  background: var(--sky, #10213a);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--brick-deep);
+  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease);
+}
+.pane::after { /* glazing bars, drawn over the weather */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 2px), #e9e4da calc(50% - 2px), #e9e4da calc(50% + 2px), transparent calc(50% + 2px)),
+    linear-gradient(transparent calc(42% - 2px), #e9e4da calc(42% - 2px), #e9e4da calc(42% + 2px), transparent calc(42% + 2px)),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.07), transparent 40%);
+}
+.sill {
+  display: block; position: relative; margin: 0 -10px;
+  background: var(--stone); color: var(--stone-ink);
+  font: 800 1.05rem/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+  padding: 0.5rem 0.4rem 0.45rem; border-radius: 2px;
+  box-shadow: 0 8px 14px -6px rgba(0, 0, 0, 0.65);
+}
+.window:hover .pane { border-color: #fff7e3; }
+.window[aria-pressed="true"] .pane {
+  border-color: var(--lamp);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--brick-deep);
+}
+.window[aria-pressed="true"] .sill { background: var(--lamp); }
+.window:focus-visible { outline: none; }
+.window:focus-visible .pane { outline: 3px solid var(--lamp); outline-offset: 4px; }
+.door { max-width: 1240px; margin: 1.8rem auto 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+.hint { color: #f3e6e0; font-size: 0.98rem; max-width: 34rem; }
+.hint strong { color: #fff; }
+
+/* ---------- street level sections ---------- */
+main > section { padding: clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem) 0; }
+.wrap { max-width: 1240px; margin: 0 auto; }
+h2 { font-size: clamp(2.3rem, 5vw, 3.6rem); }
+.intro { color: var(--ink-dim); max-width: 38rem; margin-top: 0.9rem; font-size: 1.05rem; }
+
+.tune { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 3rem); margin-top: 2.25rem; align-items: start; }
+.controls { display: grid; gap: 1.15rem; }
+.now { font: 800 1.7rem/1 var(--display); }
+.now span { color: var(--lamp); }
+.ctl { display: grid; grid-template-columns: 6.5rem 1fr 3.2rem; align-items: center; gap: 0.75rem; }
+.ctl label { font-weight: 700; }
+.ctl output { font: 0.86rem var(--mono); color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--lamp); }
+.toggle { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; cursor: pointer; }
+.toggle input { width: 1.1rem; height: 1.1rem; accent-color: var(--lamp); }
+.toggle small { font-weight: 400; color: var(--ink-dim); }
+.readout {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);
+  font: 0.86rem var(--mono); color: var(--ink-dim); font-variant-numeric: tabular-nums;
+}
+.readout b { color: var(--ink); font-weight: 700; }
+
+.code { background: #070c14; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.tabs { display: flex; align-items: center; border-bottom: 1px solid var(--line); }
+.tabs button:not(.copy) {
+  all: unset; cursor: pointer; padding: 0.7rem 1rem; font: 700 0.9rem var(--body); color: var(--ink-dim);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tabs button:not(.copy)[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--lamp); }
+.tabs button:not(.copy):focus-visible { outline: 2px solid var(--lamp); outline-offset: -4px; }
+.tabs .copy { margin-left: auto; align-self: stretch; }
+.tab-label { padding: 0.7rem 1rem; font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+pre { margin: 0; padding: 1.1rem 1.2rem 1.3rem; overflow-x: auto; line-height: 1.65; color: #d7e0ee; tab-size: 2; }
+.k { color: #ff9e7a; } .s { color: var(--lamp); } .n { color: #8fd3ff; } .c { color: #7486a0; }
+
+.winter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+.winter ul { margin: 1.2rem 0 1.5rem; padding-left: 1.2rem; color: var(--ink-dim); }
+.winter li { margin: 0.3rem 0; }
+.btn {
+  font: 700 1rem var(--body); cursor: pointer; border: 2px solid var(--lamp); border-radius: 8px;
+  background: transparent; color: var(--lamp); padding: 0.7rem 1.2rem;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.btn:hover { background: var(--lamp); color: var(--lamp-ink); }
+
+.directory { margin-top: 2.25rem; border-top: 2px solid var(--ink); }
+.directory div {
+  display: grid; grid-template-columns: minmax(8rem, 0.32fr) 1fr; gap: 1.5rem; align-items: baseline;
+  padding: 1rem 0; border-bottom: 1px solid var(--line);
+}
+.directory dt { font: 800 1.6rem/1.05 var(--display); }
+.directory dt span { font: 0.78rem var(--mono); color: var(--ink-dim); letter-spacing: 0; display: block; margin-top: 0.3rem; font-weight: 400; }
+.directory dd { margin: 0; color: var(--ink-dim); max-width: 44rem; }
+.directory dd strong { color: var(--ink); }
+
+.agent { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.agent .intro { margin-bottom: 1rem; }
+.agent ol { color: var(--ink-dim); padding-left: 1.2rem; margin: 0; }
+.agent li { margin: 0.35rem 0; }
+.note pre { white-space: pre-wrap; max-height: 26rem; overflow-y: auto; font-size: 0.82rem; }
+
+.api pre { font-size: 0.82rem; }
+.api { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); margin-top: 2.25rem; }
+.api h3 { font-size: 1.6rem; margin-bottom: 0.8rem; }
+.opts { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+.opts td { padding: 0.45rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.opts td:first-child { font: 0.84rem var(--mono); color: var(--lamp); padding-right: 1rem; white-space: nowrap; }
+.opts td:last-child { color: var(--ink-dim); }
+
+footer {
+  margin-top: clamp(4rem, 9vw, 7rem); padding: 2rem clamp(1rem, 4vw, 3rem) 3rem;
+  border-top: 8px solid var(--brick-deep); background: var(--night);
+}
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; color: var(--ink-dim); font-size: 0.95rem; }
+footer .mark { font: 800 1.6rem/1 var(--display); color: var(--ink); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 980px) {
+  .sign-band { grid-template-columns: 1fr; }
+  .windows { gap: 1rem 0.9rem; }
+  .tune, .winter, .agent, .api { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .roof nav .hide-sm { display: none; }
+  .windows {
+    display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -1rem; padding: 0 1rem 1.2rem; scroll-padding: 0 1rem; scrollbar-width: none;
+  }
+  .window { flex: 0 0 40vw; scroll-snap-align: start; }
+  .pane { border-width: 5px; border-bottom-width: 6px; }
+  .sill { margin: 0 -6px; font-size: 0.9rem; }
+  .plaque.live code { font-size: 0.78rem; white-space: normal; overflow-wrap: anywhere; }
+  .plaque { width: 100%; }
+  .sign-band { gap: 1rem; padding: 1.25rem 0 1.25rem; }
+  .enamel { padding: 0.35rem 1rem 0.45rem; }
+  .enamel h1 { font-size: 3rem; }
+  .hook .sub { font-size: 0.95rem; }
+  .actions { margin-top: 0.9rem; }
+  .plaque code { flex: 1; font-size: 0.8rem; }
+  .ctl { grid-template-columns: 5.2rem 1fr 2.8rem; }
+  .directory div { grid-template-columns: 1fr; gap: 0.3rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="roof">
+  <a class="mark" href="#top">atmosfx</a>
+  <nav aria-label="Main">
+    <a href="#tune">Playground</a>
+    <a href="#agent" class="hide-sm">For AI agents</a>
+    <a href="https://github.com/Vivek-Krishna00/atmosfx#readme" class="hide-sm">Docs</a>
+    <a href="https://github.com/Vivek-Krishna00/atmosfx">GitHub</a>
+    <a href="https://www.npmjs.com/package/@vivekkrishna30/atmosfx">npm</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="facade" style="padding-top:0" aria-labelledby="name">
+    <div class="sign-band">
+      <div class="enamel"><h1 id="name">atmosfx</h1></div>
+      <div class="hook">
+        <p class="lede">Weather for any element.</p>
+        <p class="sub">Snow, rain, petals and seven more, over the whole page or inside one box. Zero dependencies, about 6&nbsp;kB gzipped, and smooth on a slow phone.</p>
+        <div class="actions">
+          <div class="plaque">
+            <code id="install">npm i @vivekkrishna30/atmosfx</code>
+            <button class="copy" data-copy="#install" type="button">Copy</button>
+          </div>
+          <a class="alt" href="#agent">No code? Give your AI agent a prompt</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="windows" id="windows" role="group" aria-label="Effects. Each window runs one live; press one to pour it over the page."></div>
+    <div class="door">
+      <p class="hint">Every window is its own element running a live effect. <strong>Press one</strong> to pour that weather over the whole page.</p>
+      <div class="plaque live">
+        <code id="live">Effects.mount('page', 'snow');</code>
+        <button class="copy" data-copy="#live" type="button">Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tune" aria-labelledby="tune-h">
+    <div class="wrap">
+      <h2 id="tune-h">Tune the weather</h2>
+      <p class="intro">These controls drive the effect running over this page right now. The code beside them is exactly what you would write to get it.</p>
+      <div class="tune">
+        <div class="controls">
+          <p class="now">Over the page: <span id="now">…</span></p>
+          <div class="ctl"><label for="intensity">Intensity</label><input id="intensity" type="range" min="0" max="1" step="0.05" value="0.5" /><output for="intensity">0.5</output></div>
+          <div class="ctl"><label for="wind">Wind</label><input id="wind" type="range" min="-1" max="1" step="0.05" value="0" /><output for="wind">0</output></div>
+          <div class="ctl"><label for="speed">Speed</label><input id="speed" type="range" min="0.2" max="3" step="0.1" value="1" /><output for="speed">1</output></div>
+          <div class="ctl"><label for="size">Size</label><input id="size" type="range" min="0.5" max="2.5" step="0.1" value="1" /><output for="size">1</output></div>
+          <label class="toggle"><input id="interactive" type="checkbox" checked /> Cursor moves particles <small>(the <code>interactive</code> option)</small></label>
+          <p class="readout" aria-live="off"><span>fps <b id="fps">—</b></span><span>particles <b id="parts">—</b></span><span>quality <b id="quality">—</b></span></p>
+        </div>
+        <div class="code">
+          <div class="tabs" role="tablist" aria-label="Install method">
+            <button role="tab" aria-selected="true" aria-controls="snippet" data-tab="npm" type="button">npm</button>
+            <button role="tab" aria-selected="false" aria-controls="snippet" data-tab="cdn" type="button">Script tag</button>
+            <button class="copy" data-copy="#snippet" type="button">Copy</button>
+          </div>
+          <pre id="snippet" role="tabpanel" tabindex="0"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="winter-h">
+    <div class="wrap winter">
+      <div>
+        <h2 id="winter-h">Winter brings its own street</h2>
+        <p class="intro">The <code>winter</code> effect is a whole scene, not just falling flakes:</p>
+        <ul>
+          <li>a snow bank that builds up along the bottom</li>
+          <li>icicles that grow along the top and side edges, and drip</li>
+          <li>frost creeping in from the corners</li>
+          <li>snow caps and icicles on any elements you name with <code>settleOn</code>, like the window sills above</li>
+        </ul>
+        <button class="btn" type="button" id="go-winter">Let it snow on the sills</button>
+      </div>
+      <div class="code">
+        <pre><span class="k">import</span> { Effects } <span class="k">from</span> <span class="s">'@vivekkrishna30/atmosfx'</span>;
+
+Effects.<span class="n">mount</span>(<span class="s">'page'</span>, <span class="s">'winter'</span>, {
+  settleOn: <span class="s">'.sill'</span>, <span class="c">// caps + icicles on these</span>
+});</pre>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="dir-h">
+    <div class="wrap">
+      <h2 id="dir-h">What's in the building</h2>
+      <dl class="directory">
+        <div><dt>6.7 kB<span>core + one effect, gzipped</span></dt><dd>The engine alone is 6.1 kB and <strong>one effect</strong> brings it to 6.7 kB. All ten effects together are about 13.5 kB. Measured with esbuild and gzip level 9, no dependencies.</dd></div>
+        <div><dt>60 fps<span>on a CPU slowed 6×</span></dt><dd>The full winter scene held 60 fps in Chrome with the CPU throttled six times. Quality <strong>steps down on its own</strong> after about a second of slow frames, and back up when there is headroom.</dd></div>
+        <div><dt>Page or element</dt><dd><code>Effects.mount('page', …)</code> covers the viewport; pass an element or a CSS selector to keep the weather <strong>inside one box</strong>. Every window above is its own mount.</dd></div>
+        <div><dt>Polite by default</dt><dd>Pauses in background tabs, honors <strong>prefers-reduced-motion</strong> with a still frame, never blocks clicks, and returns a do-nothing handle on the server, so it is safe in SSR frameworks.</dd></div>
+        <div><dt>Seasons</dt><dd><code>Effects.auto()</code> picks the effect for the current month: winter, cherry blossom, summer, autumn. Override any month, or flip it for the <strong>southern hemisphere</strong>.</dd></div>
+        <div><dt>Your own</dt><dd><code>registerEffect()</code> takes plain data plus one draw function. Sprites are drawn once ahead of time, <strong>never per frame</strong>.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="agent" aria-labelledby="agent-h">
+    <div class="wrap agent">
+      <div>
+        <h2 id="agent-h">Don't write code? Hand this to your AI agent.</h2>
+        <p class="intro">If you build with an AI coding assistant, paste this prompt into it. It already uses the effect and settings you picked above.</p>
+        <ol>
+          <li>Pick a window and tune it above.</li>
+          <li>Copy the prompt.</li>
+          <li>Paste it into your agent in your project.</li>
+        </ol>
+      </div>
+      <div class="code note">
+        <div class="tabs"><span class="tab-label">Agent prompt</span><button class="copy" data-copy="#prompt" type="button">Copy prompt</button></div>
+        <pre id="prompt" tabindex="0"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="api-h">
+    <div class="wrap">
+      <h2 id="api-h">The whole API</h2>
+      <div class="api">
+        <div class="code">
+          <pre><span class="k">const</span> fx = Effects.<span class="n">mount</span>(target, effect, options);
+<span class="c">// target: 'page' | Element | CSS selector</span>
+
+fx.<span class="n">update</span>({ intensity: <span class="n">1</span> });
+fx.<span class="n">switch</span>(<span class="s">'rain'</span>);
+fx.<span class="n">pause</span>(); fx.<span class="n">resume</span>();
+fx.<span class="n">stats</span>();   <span class="c">// { fps, particles, quality, … }</span>
+fx.<span class="n">destroy</span>();
+
+Effects.<span class="n">auto</span>(<span class="s">'page'</span>, options, { hemisphere: <span class="s">'south'</span> });
+
+<span class="c">// smallest bundle: no names registered</span>
+<span class="k">import</span> { Effects, snow } <span class="k">from</span> <span class="s">'@vivekkrishna30/atmosfx/core'</span>;
+Effects.<span class="n">mount</span>(<span class="s">'page'</span>, snow);</pre>
+        </div>
+        <div>
+          <h3>Options</h3>
+          <table class="opts">
+            <tr><td>intensity</td><td>0 to 1, particle count. Default 0.5</td></tr>
+            <tr><td>speed · size</td><td>Multipliers. Default 1</td></tr>
+            <tr><td>wind</td><td>-1 to 1, sideways push</td></tr>
+            <tr><td>colors</td><td>Replace the palette, up to 5</td></tr>
+            <tr><td>opacity · zIndex</td><td>How the canvas sits on the page</td></tr>
+            <tr><td>quality · fps</td><td>'auto' adapts; fps caps the frame rate</td></tr>
+            <tr><td>interactive</td><td>Particles part around the cursor</td></tr>
+            <tr><td>ground · settleOn</td><td>Winter's snow bank, and elements to cap</td></tr>
+          </table>
+          <p class="intro">Full reference and custom effects: <a href="https://github.com/Vivek-Krishna00/atmosfx#readme">README on GitHub</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mark">atmosfx</span>
+    <span>MIT licensed · by <a href="https://github.com/Vivek-Krishna00">Vivek-Krishna00</a> · <a href="https://www.npmjs.com/package/@vivekkrishna30/atmosfx">npm</a> · <a href="https://github.com/Vivek-Krishna00/atmosfx">GitHub</a></span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@vivekkrishna30/atmosfx@0/dist/atmosfx.global.js"></script>
+<script>
+(() => {
+  const PKG = '@vivekkrishna30/atmosfx';
+  const CDN = 'https://cdn.jsdelivr.net/npm/@vivekkrishna30/atmosfx@0/dist/atmosfx.global.js';
+  const $ = (s, r = document) => r.querySelector(s);
+  const lib = window.atmosfx;
+  const effects = [
+    ['snow', 'Snow', '#13264a'],
+    ['winter', 'Winter', '#1b3157'],
+    ['rain', 'Rain', '#1a2533'],
+    ['thunderstorm', 'Storm', '#141a26'],
+    ['cherry-blossom', 'Blossom', '#2b2140'],
+    ['autumn', 'Autumn', '#2e1c14'],
+    ['summer', 'Summer', '#3a2a1a'],
+    ['confetti', 'Confetti', '#22172e'],
+    ['stars', 'Stars', '#070b1c'],
+    ['fog', 'Fog', '#2a3442'],
+  ];
+  const label = Object.fromEntries(effects.map(([id, name]) => [id, name]));
+
+  // ---- windows: one scoped mount each ----
+  const grid = $('#windows');
+  for (const [id, name, sky] of effects) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'window';
+    b.dataset.effect = id;
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', `${name}: pour over the page`);
+    b.innerHTML = `<span class="pane" style="--sky:${sky}"></span><span class="sill">${name}</span>`;
+    grid.append(b);
+  }
+
+  if (!lib) { // CDN blocked: the page still reads, windows stay dark.
+    $('#now').textContent = 'unavailable (script blocked)';
+    return;
+  }
+  const { Effects, seasonFor } = lib;
+  const small = matchMedia('(max-width: 600px)').matches;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const panes = [];
+  for (const b of grid.children) {
+    const fx = Effects.mount(b.querySelector('.pane'), b.dataset.effect, { intensity: small ? 0.8 : 1, ground: true });
+    panes.push([b, fx]);
+  }
+  // Only animate windows that are on screen.
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const fx = panes.find(([b]) => b === e.target)?.[1];
+      if (fx) e.isIntersecting ? fx.resume() : fx.pause();
+    }
+  });
+  for (const [b] of panes) io.observe(b);
+
+  // ---- the page-wide effect ----
+  const inputs = ['intensity', 'wind', 'speed', 'size'].map((id) => $('#' + id));
+  const opts = () => ({
+    intensity: +$('#intensity').value,
+    wind: +$('#wind').value,
+    speed: +$('#speed').value,
+    size: +$('#size').value,
+    interactive: $('#interactive').checked,
+  });
+  const fromHash = location.hash.slice(1);
+  let current = label[fromHash] ? fromHash : (seasonFor() || 'snow');
+  // zIndex 5 keeps the weather under the nav (z 6) so its links stay readable.
+const page = Effects.mount('page', current, { ...opts(), zIndex: 5, settleOn: '.sill, .roof' });
+
+  function select(id, scroll) {
+    current = id;
+    page.switch(id);
+    for (const [b] of panes) {
+      const on = b.dataset.effect === id;
+      b.setAttribute('aria-pressed', String(on));
+      // In the phone strip, slide the lit window into view without moving the page.
+      if (on && grid.scrollWidth > grid.clientWidth) {
+        grid.scrollTo({ left: b.offsetLeft - grid.offsetLeft - 16, behavior: still.matches ? 'auto' : 'smooth' });
+      }
+    }
+    $('#now').textContent = label[id];
+    history.replaceState(null, '', '#' + id);
+    render();
+    if (scroll) $('#windows').scrollIntoView({ block: 'center' });
+  }
+  grid.addEventListener('click', (e) => {
+    const b = e.target.closest('.window');
+    if (b) select(b.dataset.effect);
+  });
+  $('#go-winter').addEventListener('click', () => select('winter', true));
+  for (const el of [...inputs, $('#interactive')]) {
+    el.addEventListener('input', () => {
+      if (el.type === 'range') el.nextElementSibling.textContent = el.value;
+      page.update(opts());
+      render();
+    });
+  }
+
+  // ---- code + prompt, rewritten from the live settings ----
+  const DEF = { intensity: 0.5, wind: 0, speed: 1, size: 1, interactive: false };
+  const changed = () => Object.entries(opts()).filter(([k, v]) => v !== DEF[k]);
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  let tab = 'npm';
+  function snippet(html) {
+    const S = (t) => (html ? `<span class="s">${esc(t)}</span>` : t);
+    const K = (t) => (html ? `<span class="k">${t}</span>` : t);
+    const N = (t) => (html ? `<span class="n">${t}</span>` : t);
+    const c = changed();
+    const o = c.length ? `, {\n${c.map(([k, v]) => `  ${k}: ${N(String(v))},`).join('\n')}\n}` : '';
+    const call = `Effects.${N('mount')}(${S("'page'")}, ${S(`'${current}'`)}${o});`;
+    if (tab === 'npm') return `${K('import')} { Effects } ${K('from')} ${S(`'${PKG}'`)};\n\n${K('const')} fx = ${call}`;
+    const lt = html ? '&lt;' : '<';
+    return `${lt}script src=${S(`"${CDN}"`)}>${lt}/script>\n${lt}script>\n  ${K('const')} fx = atmosfx.${call.replace(/\n/g, '\n  ')}\n${lt}/script>`;
+  }
+  function prompt() {
+    const c = changed();
+    const o = c.length ? `, { ${c.map(([k, v]) => `${k}: ${v}`).join(', ')} }` : '';
+    return `Add the atmosfx effect library to this website and run the "${current}" effect over the whole page.
+
+1. Install it: npm install ${PKG}
+   If this site has no build step or package.json, skip npm and add this tag just before </body> instead, then use the global \`atmosfx\` object in place of the import:
+   <script src="${CDN}"><\/script>
+
+2. Start it once, in the browser only, after the page loads:
+   import { Effects } from '${PKG}';
+   const fx = Effects.mount('page', '${current}'${o});
+
+3. In React, Vue, Svelte or similar, call it inside the component's mount hook (useEffect, onMounted, onMount), never during server rendering, and call fx.destroy() when the component unmounts so it is not mounted twice.
+
+4. Keep everything else on the page unchanged. The effect draws on its own canvas over the page and does not block clicks.
+
+Effect names you can use instead: ${effects.map(([id]) => id).join(', ')}.
+To limit it to one section, pass that element (or a CSS selector like '#hero') instead of 'page'.
+Docs: https://github.com/Vivek-Krishna00/atmosfx#readme`;
+  }
+  function render() {
+    const c = changed();
+    $('#live').textContent = `Effects.mount('page', '${current}'${c.length ? `, { ${c.map(([k, v]) => `${k}: ${v}`).join(', ')} }` : ''});`;
+    $('#snippet').innerHTML = snippet(true);
+    $('#prompt').textContent = prompt();
+  }
+  for (const t of document.querySelectorAll('[data-tab]')) {
+    t.addEventListener('click', () => {
+      tab = t.dataset.tab;
+      for (const x of document.querySelectorAll('[data-tab]')) x.setAttribute('aria-selected', String(x === t));
+      render();
+    });
+  }
+
+  // ---- copy buttons ----
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-copy]');
+    if (!b) return;
+    const src = $(b.dataset.copy);
+    const text = src.id === 'snippet' ? snippet(false) : src.textContent;
+    const was = b.textContent;
+    try {
+      // Some browsers leave the permission prompt pending forever; give up after a moment.
+      await Promise.race([
+        navigator.clipboard.writeText(text),
+        new Promise((_, no) => setTimeout(no, 1000)),
+      ]);
+      b.dataset.state = 'copied';
+      b.textContent = 'Copied';
+    } catch {
+      getSelection().selectAllChildren(src);
+      b.dataset.state = 'failed';
+      b.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? 'Press ⌘C' : 'Press Ctrl+C';
+    }
+    setTimeout(() => { b.textContent = was; delete b.dataset.state; }, 1800);
+  });
+
+  // ---- live readouts from fx.stats() ----
+  setInterval(() => {
+    if (document.hidden) return;
+    if (still.matches) { $('#quality').textContent = 'still frame (reduced motion)'; return; }
+    const s = page.stats();
+    if (!s.fps) return; // no sample yet
+    $('#fps').textContent = s.fps;
+    $('#parts').textContent = s.particles;
+    $('#quality').textContent = s.quality + (s.level ? ` (stepped down ${s.level})` : '');
+  }, 600);
+
+  select(current);
+})();
+</script>
+</body>
+</html>
